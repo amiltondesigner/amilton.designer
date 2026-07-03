@@ -107,38 +107,40 @@ export default function WhatsAppBuilder() {
   const canClear =
     count > 0 || Boolean(state.name) || Boolean(state.note) || dirty;
 
-  if (!expandido) {
-    return (
-      <div class="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4">
-        <button
-          type="button"
-          class="btn btn-accent text-base"
-          onClick={() => setExpandido(true)}
-          aria-expanded={false}
-        >
-          Montar minha mensagem
-        </button>
-        <a
-          href={hrefDireto}
-          target="_blank"
-          rel="noopener"
-          class="link-line text-sm text-muted transition-colors hover:text-foreground"
-        >
-          ou chame direto no WhatsApp →
-        </a>
-      </div>
-    );
-  }
-
   return (
     <div ref={rootRef} class="mt-12 max-w-2xl">
-      {/* Grupos de opções */}
-      <div
-        ref={construtorRef}
-        tabIndex={-1}
-        class="space-y-10 outline-none"
-        aria-label="Montar mensagem"
-      >
+      {/* O mesmo botão abre e fecha; as escolhas sobrevivem ao recolher */}
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-4">
+        <button
+          type="button"
+          class={`btn ${expandido ? "btn-ghost" : "btn-accent"} text-base`}
+          onClick={() => setExpandido((v) => !v)}
+          aria-expanded={expandido}
+          aria-controls="construtor-whatsapp"
+        >
+          {expandido ? "Recolher o construtor" : "Montar minha mensagem"}
+        </button>
+        {!expandido && (
+          <a
+            href={hrefDireto}
+            target="_blank"
+            rel="noopener"
+            class="link-line text-sm text-muted transition-colors hover:text-foreground"
+          >
+            ou chame direto no WhatsApp →
+          </a>
+        )}
+      </div>
+
+      {expandido && (
+        <div id="construtor-whatsapp" class="mt-10">
+          {/* Grupos de opções */}
+          <div
+            ref={construtorRef}
+            tabIndex={-1}
+            class="space-y-10 outline-none"
+            aria-label="Montar mensagem"
+          >
         {inquiryGroups.map((g, gi) => {
           const selected =
             g.id === "services"
@@ -265,7 +267,9 @@ export default function WhatsAppBuilder() {
           {count > 0 ? `${count} ${count === 1 ? "opção" : "opções"} · ` : ""}
           abre direto no seu WhatsApp
         </p>
-      </aside>
+          </aside>
+        </div>
+      )}
 
       {/* CTA fixo no mobile — ao alcance do polegar enquanto monta */}
       <a

@@ -132,6 +132,28 @@ test.describe("mapa conceitual", () => {
   });
 });
 
+test.describe("conexão", () => {
+  test("construtor de mensagem abre e fecha preservando escolhas", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "networkidle" });
+    const abrir = page.getByRole("button", { name: "Montar minha mensagem" });
+    await abrir.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(800); // hidratação da ilha (client:visible)
+    await abrir.click();
+    await expect(page.locator("#construtor-whatsapp")).toBeVisible();
+
+    await page.getByRole("button", { name: "UI/UX Design" }).click();
+    await page.getByRole("button", { name: "Recolher o construtor" }).click();
+    await expect(page.locator("#construtor-whatsapp")).toHaveCount(0);
+
+    await page.getByRole("button", { name: "Montar minha mensagem" }).click();
+    await expect(
+      page.getByRole("button", { name: "UI/UX Design" }),
+    ).toHaveAttribute("aria-pressed", "true");
+  });
+});
+
 test.describe("fallbacks lineares", () => {
   test.use({ contextOptions: { reducedMotion: "reduce" } });
 
