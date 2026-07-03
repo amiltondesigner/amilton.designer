@@ -5,6 +5,7 @@ import Descoberta from "../components/experience/Descoberta.astro";
 import Pensamento from "../components/experience/Pensamento.astro";
 import Evidencias from "../components/experience/Evidencias.astro";
 import Conexao from "../components/experience/Conexao.astro";
+import CaseOverlay from "../components/experience/CaseOverlay.tsx";
 ---
 
 <Base>
@@ -21,4 +22,5 @@ import Conexao from "../components/experience/Conexao.astro";
     <Evidencias />
     <Conexao />
   </main>
+  <CaseOverlay client:idle />
 </Base>

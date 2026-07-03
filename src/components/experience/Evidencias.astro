@@ -43,7 +43,6 @@ const projects = (await getCollection("projects")).sort(
         >
           <div
             class="relative overflow-hidden rounded-lg border border-border bg-surface transition-colors duration-500 group-hover:border-accent/40"
-            style={`view-transition-name: cover-${p.id}`}
           >
             <div class="aspect-[4/3] w-full">
               {p.data.cover ? (
@@ -71,7 +70,6 @@ const projects = (await getCollection("projects")).sort(
           <div class="mt-5 flex items-baseline justify-between gap-4">
             <h3
               class="font-display text-2xl font-semibold tracking-tight transition-colors duration-300 group-hover:text-accent md:text-3xl"
-              style={`view-transition-name: title-${p.id}`}
             >
               {p.data.title}
             </h3>

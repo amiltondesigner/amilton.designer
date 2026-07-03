@@ -2,7 +2,6 @@
 import "@fontsource-variable/inter/index.css";
 import "lenis/dist/lenis.css";
 import "../styles/global.css";
-import { ClientRouter } from "astro:transitions";
 import { site } from "../config/site";
 
 interface Props {
@@ -36,19 +35,22 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <ClientRouter />
   </head>
   <body data-chapter="abertura">
     <slot />
 
     <script>
-      import {
-        initExperience,
-        destroyExperience,
-      } from "../scripts/experience";
+      import { initExperience } from "../scripts/experience";
 
-      document.addEventListener("astro:page-load", initExperience);
-      document.addEventListener("astro:before-swap", destroyExperience);
+      // Sem ClientRouter (o overlay de cases cuida da transição home ↔ case),
+      // então o ciclo de vida é o do documento mesmo.
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => initExperience(), {
+          once: true,
+        });
+      } else {
+        initExperience();
+      }
     </script>
   </body>
 </html>

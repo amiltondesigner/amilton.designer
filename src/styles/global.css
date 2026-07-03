@@ -335,6 +335,108 @@ body[data-chapter="conexao"] {
 }
 
 /* ============================================================
+   Leitura de case — atmosfera fixa (independe do capítulo em que
+   o overlay abriu): base quente + azul como acento de leitura.
+   Usada pelo overlay e pelas páginas /trabalho/[slug].
+   ============================================================ */
+.case-tema {
+  --ch-bg: #faf6f0;
+  --ch-fg: #1c1917;
+  --ch-muted: #57534e;
+  --ch-accent: #2b5ce0;
+  --ch-deep: #16308c;
+}
+
+/* ============================================================
+   Overlay de case — <dialog> nativo (foco/Esc por conta do browser)
+   ============================================================ */
+.case-overlay {
+  width: min(100%, 72rem);
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+  background: var(--ch-bg);
+  color: var(--ch-fg);
+}
+@media (min-width: 768px) {
+  .case-overlay {
+    height: 94dvh;
+    max-height: 94dvh;
+    margin-top: 6dvh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    border: 1px solid var(--color-border);
+    border-bottom: none;
+  }
+}
+.case-overlay::backdrop {
+  background: rgb(12 10 9 / 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+/* entrada suave — some sozinha com reduced-motion (transições 0.01ms) */
+.case-overlay[open] {
+  translate: 0 0;
+  opacity: 1;
+  transition:
+    translate 0.55s var(--ease-out-expo),
+    opacity 0.4s ease;
+}
+@starting-style {
+  .case-overlay[open] {
+    translate: 0 3rem;
+    opacity: 0;
+  }
+}
+.case-overlay-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.case-overlay-fechar {
+  position: sticky;
+  top: 1rem;
+  margin-left: auto;
+  margin-right: 1rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in oklab, var(--ch-bg) 80%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--ch-fg);
+  font-size: 1rem;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+.case-overlay-fechar:hover {
+  border-color: var(--ch-muted);
+  background: var(--color-surface);
+}
+.case-overlay-conteudo {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 878px;
+  padding: 0 1.5rem 5rem;
+}
+.case-overlay-loading {
+  padding: 6rem 1.5rem;
+  text-align: center;
+  color: var(--ch-muted);
+}
+/* trava o scroll do fundo pra quem não tem Lenis (reduced-motion) */
+body:has(dialog.case-overlay[open]) {
+  overflow: hidden;
+}
+
+/* ============================================================
    Tipografia do conteúdo de case (MDX renderizado)
    ============================================================ */
 .prose-case > :first-child {
