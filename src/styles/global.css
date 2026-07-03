@@ -4,6 +4,12 @@
    Base clara quente; a cor conta a história (uma dominante por
    capítulo, trocada via [data-chapter] no <body> e interpolada
    com @property).
+
+   IMPORTANTE (aprendido na prática): os tokens de cor precisam de
+   `@theme inline` + derivadas em seletor universal. Custom property
+   que referencia outra via var() resolve ONDE É DEFINIDA (spec), então
+   tokens no :root congelariam no valor do primeiro capítulo e o
+   [data-chapter] do body nunca chegaria a acentos/bordas/superfícies.
    ============================================================ */
 
 /* Clash Display — display autoral (self-host, licença ITF FFL) */
@@ -19,7 +25,7 @@
 
 /* ============================================================
    Variáveis de capítulo — registradas pra interpolar na troca.
-   Valores por capítulo vêm de src/config/chapters.ts (espelho).
+   Valores por capítulo espelham src/config/chapters.ts.
    ============================================================ */
 @property --ch-bg {
   syntax: "<color>";
@@ -54,6 +60,11 @@
   --ch-muted: #57534e;
   --ch-accent: #44403c;
   --ch-deep: #1c1917;
+
+  /* Constantes (nunca mudam por capítulo) */
+  --paper: #fafaf7;
+  --descarte: #d92d20;
+  --whatsapp: #25d366;
 }
 body[data-chapter="descoberta"] {
   --ch-bg: #eef3fb;
@@ -84,9 +95,16 @@ body[data-chapter="conexao"] {
   --ch-deep: #4c1d95;
 }
 
+/* Derivadas — recomputadas POR ELEMENTO (acompanham overrides locais
+   como .case-tema, além do capítulo do body) */
+:where(*) {
+  --surface: color-mix(in oklab, #ffffff 58%, var(--ch-bg));
+  --borda: color-mix(in oklab, var(--ch-fg) 14%, var(--ch-bg));
+  --faint: color-mix(in oklab, var(--ch-muted) 74%, var(--ch-bg));
+}
+
 /* ============================================================
-   Tokens semânticos (Tailwind v4) — resolvem nas vars de capítulo,
-   então todo o site muda de atmosfera junto.
+   Tokens Tailwind
    ============================================================ */
 @theme {
   /* Tipografia — Clash Display (protagonista) + Inter (corpo) */
@@ -94,21 +112,9 @@ body[data-chapter="conexao"] {
   --font-display: "Clash Display", "Inter Variable", ui-sans-serif, system-ui,
     sans-serif;
 
-  /* Cores narrativas */
-  --color-background: var(--ch-bg);
-  --color-foreground: var(--ch-fg);
-  --color-muted: var(--ch-muted);
-  --color-accent: var(--ch-accent);
-  --color-deep: var(--ch-deep);
-
-  /* Derivadas — acompanham o capítulo automaticamente */
-  --color-surface: color-mix(in oklab, #ffffff 58%, var(--ch-bg));
-  --color-border: color-mix(in oklab, var(--ch-fg) 14%, var(--ch-bg));
-  --color-faint: color-mix(in oklab, var(--ch-muted) 74%, var(--ch-bg));
-
-  /* Fixas */
-  --color-paper: #fafaf7; /* texto claro sobre fundos deep */
-  --color-descarte: #d92d20; /* só nos descartes do Pensamento */
+  /* Constantes */
+  --color-paper: #fafaf7;
+  --color-descarte: #d92d20;
   --color-whatsapp: #25d366;
 
   /* Raios concêntricos */
@@ -121,6 +127,19 @@ body[data-chapter="conexao"] {
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-soft: cubic-bezier(0.45, 0, 0.15, 1);
+}
+
+/* Cores narrativas — INLINE: a expressão var(--ch-*) vai parar dentro
+   de cada utility e resolve no elemento que a usa. */
+@theme inline {
+  --color-background: var(--ch-bg);
+  --color-foreground: var(--ch-fg);
+  --color-muted: var(--ch-muted);
+  --color-accent: var(--ch-accent);
+  --color-deep: var(--ch-deep);
+  --color-surface: var(--surface);
+  --color-border: var(--borda);
+  --color-faint: var(--faint);
 }
 
 /* ============================================================
@@ -198,7 +217,7 @@ body[data-chapter="conexao"] {
     line-height: 1;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--ch-muted);
   }
 
   /* Escala display — Clash assume o palco */
@@ -226,8 +245,8 @@ body[data-chapter="conexao"] {
 
   /* Momento de impacto — o fundo inunda com a versão profunda */
   .impact {
-    background-color: var(--color-deep);
-    color: var(--color-paper);
+    background-color: var(--ch-deep);
+    color: var(--paper);
   }
 
   .btn {
@@ -247,23 +266,23 @@ body[data-chapter="conexao"] {
       border-color 0.3s ease;
   }
   .btn-accent {
-    background-color: var(--color-accent);
+    background-color: var(--ch-accent);
     color: #fff;
   }
   .btn-accent:hover {
-    background-color: var(--color-deep);
+    background-color: var(--ch-deep);
   }
   .btn-ghost {
-    border: 1px solid var(--color-border);
-    color: var(--color-foreground);
+    border: 1px solid var(--borda);
+    color: var(--ch-fg);
   }
   .btn-ghost:hover {
-    border-color: var(--color-muted);
-    background-color: var(--color-surface);
+    border-color: var(--ch-muted);
+    background-color: var(--surface);
   }
   /* Verde do WhatsApp — só no envio. Texto escuro p/ contraste AA. */
   .btn-whatsapp {
-    background-color: var(--color-whatsapp);
+    background-color: var(--whatsapp);
     color: #08130b;
   }
   .btn-whatsapp:hover {
@@ -294,43 +313,43 @@ body[data-chapter="conexao"] {
     display: inline-flex;
     align-items: center;
     border-radius: 9999px;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--borda);
     padding: 0.55rem 1rem;
     min-height: 2.5rem;
     font-size: 0.9rem;
     line-height: 1;
-    color: var(--color-muted);
+    color: var(--ch-muted);
     transition:
       border-color 0.3s var(--ease-out-quart),
       background-color 0.3s var(--ease-out-quart),
       color 0.3s var(--ease-out-quart);
   }
   .chip:hover {
-    border-color: var(--color-muted);
-    color: var(--color-foreground);
+    border-color: var(--ch-muted);
+    color: var(--ch-fg);
   }
   .chip-on {
-    border-color: var(--color-accent);
-    background-color: color-mix(in oklab, var(--color-accent) 12%, transparent);
-    color: var(--color-foreground);
+    border-color: var(--ch-accent);
+    background-color: color-mix(in oklab, var(--ch-accent) 12%, transparent);
+    color: var(--ch-fg);
   }
 
   .field {
     width: 100%;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--color-border);
-    background-color: var(--color-surface);
+    border: 1px solid var(--borda);
+    background-color: var(--surface);
     padding: 0.7rem 0.9rem;
     font-size: 0.95rem;
-    color: var(--color-foreground);
+    color: var(--ch-fg);
     transition: border-color 0.3s ease;
   }
   .field::placeholder {
-    color: var(--color-faint);
+    color: var(--faint);
   }
   .field:focus {
     outline: none;
-    border-color: var(--color-accent);
+    border-color: var(--ch-accent);
   }
 }
 
@@ -366,7 +385,7 @@ body[data-chapter="conexao"] {
     max-height: 94dvh;
     margin-top: 6dvh;
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--borda);
     border-bottom: none;
   }
 }
@@ -406,7 +425,7 @@ body[data-chapter="conexao"] {
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 9999px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--borda);
   background: color-mix(in oklab, var(--ch-bg) 80%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -418,7 +437,7 @@ body[data-chapter="conexao"] {
 }
 .case-overlay-fechar:hover {
   border-color: var(--ch-muted);
-  background: var(--color-surface);
+  background: var(--surface);
 }
 .case-overlay-conteudo {
   margin-inline: auto;
@@ -432,8 +451,230 @@ body[data-chapter="conexao"] {
   color: var(--ch-muted);
 }
 /* trava o scroll do fundo pra quem não tem Lenis (reduced-motion) */
-body:has(dialog.case-overlay[open]) {
+body:has(dialog[open]) {
   overflow: hidden;
+}
+
+/* ============================================================
+   O ponto — navegação da experiência (abre o mapa conceitual).
+   A cor do miolo é a dominante do capítulo atual: uma bússola.
+   ============================================================ */
+.ponto-mapa {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border: 1px solid var(--borda);
+  background: color-mix(in oklab, var(--ch-bg) 72%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    transform 0.4s var(--ease-out-expo),
+    border-color 0.3s ease,
+    background-color 0.9s var(--ease-soft);
+}
+.ponto-mapa:hover {
+  transform: scale(1.08);
+  border-color: var(--ch-muted);
+}
+.ponto-mapa .ponto {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 9999px;
+  background: var(--ch-accent);
+  transition: background-color 0.9s var(--ease-soft);
+  animation: ponto-respira 3.4s ease-in-out infinite;
+}
+@keyframes ponto-respira {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.78);
+  }
+}
+
+/* ============================================================
+   Mapa conceitual — fullscreen na cor profunda do capítulo atual
+   ============================================================ */
+.mapa-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: var(--ch-deep);
+  color: var(--paper);
+}
+.mapa-overlay::backdrop {
+  background: transparent;
+}
+.mapa-overlay[open] {
+  opacity: 1;
+  transition: opacity 0.45s ease;
+}
+@starting-style {
+  .mapa-overlay[open] {
+    opacity: 0;
+  }
+}
+.mapa-overlay :focus-visible {
+  outline-color: var(--paper);
+}
+
+.mapa-topo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+}
+.mapa-topo .kicker {
+  color: color-mix(in oklab, var(--paper) 65%, transparent);
+}
+.mapa-fechar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--paper) 28%, transparent);
+  color: var(--paper);
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+.mapa-fechar:hover {
+  border-color: color-mix(in oklab, var(--paper) 55%, transparent);
+  background: color-mix(in oklab, var(--paper) 8%, transparent);
+}
+
+.mapa-palco {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+}
+.mapa-linhas {
+  display: none;
+}
+.mapa-nos {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 6.5rem 1.5rem 3rem;
+}
+.mapa-no {
+  color: inherit;
+  text-align: left;
+  animation: mapa-nasce 0.7s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i) * 75ms);
+}
+.mapa-no-rotulo {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  transition: opacity 0.3s ease;
+}
+.mapa-no:hover .mapa-no-rotulo {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 2px;
+}
+.mapa-no-desc {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  color: color-mix(in oklab, var(--paper) 72%, transparent);
+}
+.mapa-dica {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 1.5rem;
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--paper) 55%, transparent);
+}
+@keyframes mapa-nasce {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+}
+
+@media (min-width: 768px) {
+  .mapa-palco {
+    overflow: hidden;
+  }
+  .mapa-linhas {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .mapa-linhas line {
+    stroke: color-mix(in oklab, var(--paper) 16%, transparent);
+    stroke-width: 1.5px;
+    vector-effect: non-scaling-stroke;
+  }
+  .mapa-nos {
+    display: block;
+    padding: 0;
+  }
+  .mapa-no {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+}
+
+/* Manifesto — conteúdo exclusivo do mapa */
+.manifesto {
+  height: 100%;
+  overflow-y: auto;
+  padding: 6.5rem 1.5rem 3rem;
+}
+.manifesto-conteudo {
+  max-width: 56rem;
+  margin-inline: auto;
+}
+.manifesto-linha {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 4.6vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  animation: mapa-nasce 0.7s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i) * 110ms);
+}
+.manifesto-linha + .manifesto-linha {
+  margin-top: 1.4em;
+}
+.manifesto-fecho {
+  margin-top: 3.5rem;
+  color: color-mix(in oklab, var(--paper) 75%, transparent);
 }
 
 /* ============================================================
@@ -447,12 +688,12 @@ body:has(dialog.case-overlay[open]) {
   font-weight: 600;
   font-size: 1.5rem;
   letter-spacing: -0.01em;
-  color: var(--color-foreground);
+  color: var(--ch-fg);
   margin-top: 2.75rem;
   margin-bottom: 0.75rem;
 }
 .prose-case p {
-  color: var(--color-muted);
+  color: var(--ch-muted);
   line-height: 1.75;
   margin-bottom: 1rem;
 }
@@ -462,6 +703,6 @@ body:has(dialog.case-overlay[open]) {
   margin-top: 1.75rem;
   margin-bottom: 0.5rem;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background-color: var(--color-surface);
+  border: 1px solid var(--borda);
+  background-color: var(--surface);
 }

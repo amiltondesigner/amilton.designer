@@ -81,14 +81,14 @@ const palavras = TITULO.split(" ");
     display: inline-block;
     width: 1px;
     height: 2.5rem;
-    background: linear-gradient(to bottom, var(--color-faint), transparent);
+    background: linear-gradient(to bottom, var(--faint), transparent);
     overflow: hidden;
   }
   .scroll-cue::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: var(--color-accent);
+    background: var(--ch-accent);
     animation: cue 2.2s var(--ease-out-expo) infinite;
   }
   @keyframes cue {

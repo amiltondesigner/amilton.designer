@@ -6,6 +6,7 @@ import Pensamento from "../components/experience/Pensamento.astro";
 import Evidencias from "../components/experience/Evidencias.astro";
 import Conexao from "../components/experience/Conexao.astro";
 import CaseOverlay from "../components/experience/CaseOverlay.tsx";
+import ConceptMap from "../components/experience/ConceptMap.tsx";
 ---
 
 <Base>
@@ -15,6 +16,7 @@ import CaseOverlay from "../components/experience/CaseOverlay.tsx";
   >
     Pular a abertura
   </a>
+  <ConceptMap client:idle />
   <main>
     <Abertura />
     <Descoberta />

@@ -237,7 +237,7 @@ export default function WhatsAppBuilder() {
         rel="noopener"
         aria-hidden={!showBar}
         tabIndex={showBar ? undefined : -1}
-        class={`btn btn-whatsapp fixed inset-x-4 bottom-4 z-40 text-base shadow-xl shadow-black/40 transition-all duration-300 lg:hidden ${
+        class={`btn btn-whatsapp fixed bottom-4 left-4 right-20 z-40 text-base shadow-lg shadow-black/15 transition-all duration-300 lg:hidden ${
           showBar
             ? "translate-y-0 opacity-100"
             : "pointer-events-none translate-y-6 opacity-0"

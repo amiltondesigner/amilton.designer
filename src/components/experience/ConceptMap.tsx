@@ -1,0 +1,212 @@
+/**
+ * O ponto + mapa conceitual — a navegação da experiência (VISION.md):
+ * sem navbar; um ponto fixo (na cor do capítulo atual) abre um mapa
+ * fullscreen com os 7 nós. Manifesto é conteúdo exclusivo daqui,
+ * recompensa de quem explora.
+ *
+ * Constelação com linhas no desktop; lista editorial no mobile
+ * (a troca é só CSS, o DOM é o mesmo). <dialog> nativo: foco preso,
+ * Esc e restauração de foco por conta do browser.
+ */
+import { useRef, useState } from "preact/hooks";
+import { mapNodes } from "../../config/chapters";
+import { whatsappUrl } from "../../config/site";
+
+const POSICOES: Record<string, { x: number; y: number }> = {
+  processo: { x: 20, y: 24 },
+  pesquisa: { x: 46, y: 15 },
+  interface: { x: 71, y: 27 },
+  ia: { x: 30, y: 48 },
+  projetos: { x: 58, y: 53 },
+  manifesto: { x: 79, y: 73 },
+  contato: { x: 31, y: 79 },
+};
+
+const DESCRICOES: Record<string, string> = {
+  processo: "como eu trabalho",
+  pesquisa: "o que decide as telas",
+  interface: "o craft",
+  ia: "meu par de projeto",
+  projetos: "as provas",
+  manifesto: "só existe aqui",
+  contato: "vamos conversar",
+};
+
+const LIGACOES: Array<[string, string]> = [
+  ["processo", "pesquisa"],
+  ["pesquisa", "interface"],
+  ["processo", "ia"],
+  ["ia", "projetos"],
+  ["interface", "projetos"],
+  ["projetos", "contato"],
+  ["projetos", "manifesto"],
+];
+
+const MANIFESTO = [
+  "Começo pelo problema. A tela vem depois.",
+  "Pesquisa que não muda a interface é slide.",
+  "O vazio também é interface.",
+  "Errar cedo é mais barato que impressionar tarde.",
+  "Simples dá trabalho. É por isso que funciona.",
+];
+
+function lenis():
+  | { stop(): void; start(): void; scrollTo(t: Element): void }
+  | undefined {
+  return (
+    window as unknown as {
+      __lenis?: { stop(): void; start(): void; scrollTo(t: Element): void };
+    }
+  ).__lenis;
+}
+
+export default function ConceptMap() {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [vista, setVista] = useState<"mapa" | "manifesto">("mapa");
+
+  function abrir() {
+    dialogRef.current?.showModal();
+    lenis()?.stop();
+  }
+
+  function aoFechar() {
+    lenis()?.start();
+    setVista("mapa");
+  }
+
+  function irPara(href: string) {
+    dialogRef.current?.close();
+    if (href.startsWith("#")) {
+      const alvo = document.querySelector(href);
+      if (!alvo) return;
+      const l = lenis();
+      if (l) {
+        // o evento close (que religa o Lenis) é assíncrono; religa já,
+        // senão o scrollTo é engolido pelo estado parado
+        l.start();
+        l.scrollTo(alvo);
+      } else {
+        alvo.scrollIntoView();
+      }
+    } else {
+      location.href = href;
+    }
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        class="ponto-mapa"
+        onClick={abrir}
+        aria-label="Abrir o mapa da experiência"
+        aria-haspopup="dialog"
+      >
+        <span class="ponto" aria-hidden="true"></span>
+      </button>
+
+      <dialog
+        ref={dialogRef}
+        class="mapa-overlay"
+        aria-label="Mapa da experiência"
+        onClose={aoFechar}
+      >
+        <div class="mapa-topo">
+          <p class="kicker">
+            {vista === "mapa" ? "O mapa · escolha um caminho" : "Manifesto"}
+          </p>
+          <div class="flex items-center gap-3">
+            {vista === "manifesto" && (
+              <button
+                type="button"
+                class="mapa-fechar w-auto! px-4 text-sm"
+                onClick={() => setVista("mapa")}
+              >
+                ← mapa
+              </button>
+            )}
+            <button
+              type="button"
+              class="mapa-fechar"
+              onClick={() => dialogRef.current?.close()}
+              aria-label="Fechar o mapa"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        {vista === "mapa" ? (
+          <div class="mapa-palco">
+            <svg
+              class="mapa-linhas"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              {LIGACOES.map(([a, b]) => (
+                <line
+                  key={`${a}-${b}`}
+                  x1={POSICOES[a].x}
+                  y1={POSICOES[a].y}
+                  x2={POSICOES[b].x}
+                  y2={POSICOES[b].y}
+                />
+              ))}
+            </svg>
+            <div class="mapa-nos">
+              {mapNodes.map((no, i) => (
+                <button
+                  key={no.id}
+                  type="button"
+                  class="mapa-no"
+                  style={`--i:${i}; --x:${POSICOES[no.id].x}%; --y:${POSICOES[no.id].y}%`}
+                  onClick={() =>
+                    no.id === "manifesto"
+                      ? setVista("manifesto")
+                      : irPara(no.href)
+                  }
+                >
+                  <span class="mapa-no-rotulo">{no.label}</span>
+                  <span class="mapa-no-desc">{DESCRICOES[no.id]}</span>
+                </button>
+              ))}
+            </div>
+            <p class="mapa-dica" aria-hidden="true">
+              esc fecha
+            </p>
+          </div>
+        ) : (
+          <div class="manifesto">
+            <div class="manifesto-conteudo">
+              {MANIFESTO.map((linha, i) => (
+                <p key={linha} class="manifesto-linha" style={`--i:${i}`}>
+                  {linha}
+                </p>
+              ))}
+              <div class="manifesto-fecho">
+                <p class="text-sm">
+                  Você achou o manifesto. Ele só existe aqui dentro.
+                </p>
+                <p class="mt-4 max-w-md text-base leading-relaxed">
+                  Se você leu até o fim e concordou com a maior parte, a gente
+                  provavelmente vai se entender.
+                </p>
+                <a
+                  href={whatsappUrl(
+                    "Oi, Amilton! Achei o manifesto no seu site. Vamos conversar?",
+                  )}
+                  target="_blank"
+                  rel="noopener"
+                  class="btn mt-6 border border-current"
+                >
+                  Falar no WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+      </dialog>
+    </>
+  );
+}

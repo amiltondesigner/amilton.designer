@@ -298,36 +298,36 @@ const blocos = [
   }
 
   .fluxo-svg .no-caixa {
-    stroke: var(--color-foreground);
+    stroke: var(--ch-fg);
     stroke-width: 2;
-    fill: var(--color-surface);
+    fill: var(--surface);
   }
   .fluxo-svg .no-decisao {
-    stroke: var(--color-accent);
+    stroke: var(--ch-accent);
   }
   .fluxo-svg .no-alerta {
-    stroke: var(--color-accent);
+    stroke: var(--ch-accent);
   }
   .fluxo-svg .no-texto {
-    fill: var(--color-foreground);
+    fill: var(--ch-fg);
     font-family: var(--font-sans);
     font-size: 15px;
   }
   .fluxo-svg .no-rotulo {
-    fill: var(--color-muted);
+    fill: var(--ch-muted);
     font-family: var(--font-sans);
     font-size: 13px;
   }
   .fluxo-svg .no-seta {
-    stroke: var(--color-muted);
+    stroke: var(--ch-muted);
     stroke-width: 2;
     stroke-linecap: round;
   }
   .fluxo-svg .no-seta-sim {
-    stroke: var(--color-accent);
+    stroke: var(--ch-accent);
   }
   .fluxo-svg .no-rabisco {
-    stroke: color-mix(in oklab, var(--color-accent) 55%, transparent);
+    stroke: color-mix(in oklab, var(--ch-accent) 55%, transparent);
     stroke-width: 2;
     stroke-linecap: round;
   }
@@ -340,11 +340,11 @@ const blocos = [
     top: 50%;
     height: 3px;
     border-radius: 2px;
-    background: var(--color-descarte);
+    background: var(--descarte);
     transform-origin: left center;
   }
   .descarte:not(.descarte-sobrevive) p {
-    color: var(--color-muted);
+    color: var(--ch-muted);
   }
 </style>
 
