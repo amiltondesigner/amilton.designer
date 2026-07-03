@@ -44,28 +44,15 @@ import Socials from "../Socials.astro";
         Sempre com o mesmo objetivo, clareza que vira resultado.
       </p>
 
-      <div class="mt-12 flex items-end gap-8" data-anima>
-        <div>
-          <div
-            class="font-display text-5xl font-semibold tabular-nums"
-            data-contagem={site.yearsOfExperience}
-            data-contagem-sufixo="+"
-          >
-            {site.yearsOfExperience}+
-          </div>
-          <div class="eyebrow mt-2">anos de experiência</div>
+      <div class="mt-12" data-anima>
+        <div
+          class="font-display text-5xl font-semibold tabular-nums"
+          data-contagem={site.yearsOfExperience}
+          data-contagem-sufixo="+"
+        >
+          {site.yearsOfExperience}+
         </div>
-        <div class="h-12 w-px bg-border"></div>
-        <div>
-          <div
-            class="font-display text-5xl font-semibold tabular-nums"
-            data-contagem={services.length}
-            data-contagem-pad="2"
-          >
-            {String(services.length).padStart(2, "0")}
-          </div>
-          <div class="eyebrow mt-2">áreas de atuação</div>
-        </div>
+        <div class="eyebrow mt-2">anos de experiência</div>
       </div>
 
       <div

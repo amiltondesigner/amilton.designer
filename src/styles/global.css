@@ -182,6 +182,27 @@ body[data-chapter="conexao"] {
   }
 }
 
+/* Skip link — invisível até o primeiro Tab; focado, vira botão de verdade
+   (o utilitário sr-only zerava o padding do .btn e parecia quebrado) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+.skip-link:focus {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.8rem 1.4rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  background-color: var(--ch-accent);
+  color: #fff;
+}
+
 /* Reveals nunca escondem foco de teclado: se algo dentro de um elemento
    ainda não revelado recebe foco, ele aparece na hora. */
 [data-anima]:focus-within,
@@ -665,7 +686,7 @@ body:has(dialog[open]) {
     vector-effect: non-scaling-stroke;
   }
   .mapa-linhas .linha-satelite {
-    stroke: color-mix(in oklab, var(--paper) 9%, transparent);
+    stroke: color-mix(in oklab, var(--paper) 14%, transparent);
     stroke-dasharray: 4 5;
   }
   .mapa-nos {
@@ -727,6 +748,9 @@ body:has(dialog[open]) {
   color: var(--ch-muted);
   line-height: 1.75;
   margin-bottom: 1rem;
+  /* medida de leitura: a coluna de 878px renderizava ~104 caracteres
+     por linha; o texto fica em ~70 e as imagens seguem full-width */
+  max-width: 70ch;
 }
 .prose-case img {
   width: 100%;

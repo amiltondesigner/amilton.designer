@@ -367,18 +367,40 @@ const blocos = [
     background: var(--descarte);
     transform-origin: left center;
   }
+
+  /* Mobile: texto quebra em 2+ linhas e o traço só cortaria a primeira;
+     o line-through nativo risca linha a linha. E os rótulos do rabisco
+     sobem de corpo pra continuarem legíveis no viewBox escalado. */
+  @media (max-width: 767px) {
+    .risco {
+      display: none;
+    }
+    .descarte:not([data-sobrevive]) .descarte-texto {
+      text-decoration: line-through;
+      text-decoration-color: var(--descarte);
+      text-decoration-thickness: 3px;
+    }
+    .fluxo-svg .no-texto {
+      font-size: 34px;
+    }
+    .fluxo-svg .no-rotulo {
+      font-size: 26px;
+    }
+  }
 </style>
 
 <script>
   import { gsap } from "gsap";
   import { registerScene } from "../../scripts/experience";
 
-  // dispersão determinística das hipóteses antes de se organizarem
+  // dispersão determinística das hipóteses antes de se organizarem;
+  // deslocamento vertical pequeno de propósito: os blocos de texto não
+  // podem colidir entre si no estado disperso (achado da crítica)
   const DISPERSAO = [
-    { x: -60, y: 42, r: -3.5 },
-    { x: 54, y: -34, r: 2.8 },
-    { x: -40, y: -46, r: 2.2 },
-    { x: 66, y: 36, r: -2.4 },
+    { x: -110, y: 14, r: -3.5 },
+    { x: 88, y: -12, r: 2.8 },
+    { x: -76, y: -16, r: 2.2 },
+    { x: 120, y: 12, r: -2.4 },
   ];
 
   registerScene(() => {
@@ -391,7 +413,11 @@ const blocos = [
     const cena = (nome: string) =>
       stage.querySelector<HTMLElement>(`[data-cena="${nome}"]`)!;
 
-    /* ---- modo palco: atos viram camadas centradas ---- */
+    /* ---- modo palco: atos viram camadas centradas ----
+       opacity (NUNCA opacity/visibility): os atos precisam continuar na
+       árvore de acessibilidade; leitores de tela leem o capítulo inteiro
+       mesmo com o palco coreografado. Nada aqui é interativo, então
+       pointer-events: none resolve a sobreposição de camadas. */
     gsap.set(stage, { position: "relative", height: "100svh" });
     gsap.set(cenas, {
       position: "absolute",
@@ -403,7 +429,8 @@ const blocos = [
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
-      autoAlpha: 0,
+      opacity: 0,
+      pointerEvents: "none",
     });
 
     const perguntasEls = Array.from(
@@ -419,7 +446,7 @@ const blocos = [
       right: 0,
       top: "50%",
       yPercent: -50,
-      autoAlpha: 0,
+      opacity: 0,
     });
 
     const frases = Array.from(
@@ -427,7 +454,7 @@ const blocos = [
     );
     frases.forEach((f, i) => {
       const d = DISPERSAO[i % DISPERSAO.length];
-      gsap.set(f, { x: d.x, y: d.y, rotation: d.r, autoAlpha: 0 });
+      gsap.set(f, { x: d.x, y: d.y, rotation: d.r, opacity: 0 });
     });
 
     const nos = Array.from(
@@ -436,7 +463,7 @@ const blocos = [
     const tracos = Array.from(
       cena("fluxo").querySelectorAll<SVGPathElement>("[data-fluxo-path]"),
     );
-    gsap.set(nos, { autoAlpha: 0, y: 10 });
+    gsap.set(nos, { opacity: 0, y: 10 });
     tracos.forEach((p) => {
       const len = p.getTotalLength();
       gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
@@ -451,7 +478,7 @@ const blocos = [
     const sobrevivente = cena("descartes").querySelector<HTMLElement>(
       "[data-sobrevive]",
     );
-    gsap.set(descartesEls, { autoAlpha: 0, y: 24 });
+    gsap.set(descartesEls, { opacity: 0, y: 24 });
     gsap.set(riscos, { scaleX: 0 });
 
     const telas = cena("consequencia").querySelector<HTMLElement>(
@@ -461,8 +488,8 @@ const blocos = [
     const frase = cena("consequencia").querySelector<HTMLElement>(
       ".consequencia-frase",
     );
-    gsap.set(tiles, { autoAlpha: 0, y: 32, scale: 0.95 });
-    gsap.set(frase, { autoAlpha: 0, y: 24 });
+    gsap.set(tiles, { opacity: 0, y: 32, scale: 0.95 });
+    gsap.set(frase, { opacity: 0, y: 24 });
 
     /* ---- a sequência ---- */
     const tl = gsap.timeline({
@@ -470,35 +497,36 @@ const blocos = [
       scrollTrigger: {
         trigger: stage,
         start: "top top",
-        end: "+=420%",
+        end: "+=460%",
         scrub: true,
         pin: true,
         anticipatePin: 1,
       },
     });
 
-    // Ato 1 — perguntas em sequência
-    tl.to(cena("perguntas"), { autoAlpha: 1, duration: 0.3 }, 0);
+    // Ato 1 — perguntas em sequência (1.9 de espaçamento: a que sai
+    // termina ANTES da próxima entrar; nada de dupla exposição)
+    tl.to(cena("perguntas"), { opacity: 1, duration: 0.3 }, 0);
     perguntasEls.forEach((q, i) => {
-      const inicio = 0.3 + i * 1.5;
+      const inicio = 0.3 + i * 1.9;
       tl.fromTo(
         q,
-        { autoAlpha: 0, y: 70 },
-        { autoAlpha: 1, y: 0, duration: 0.7, ease: "power1.out" },
+        { opacity: 0, y: 70 },
+        { opacity: 1, y: 0, duration: 0.7, ease: "power1.out" },
         inicio,
       );
       tl.to(
         q,
-        { autoAlpha: 0, y: -70, duration: 0.7, ease: "power1.in" },
+        { opacity: 0, y: -70, duration: 0.7, ease: "power1.in" },
         inicio + 1.1,
       );
     });
 
     // Ato 2 — hipóteses se organizam
-    const tHip = 0.3 + perguntasEls.length * 1.5 + 0.2;
-    tl.to(cena("perguntas"), { autoAlpha: 0, duration: 0.35 }, tHip - 0.15);
-    tl.to(cena("hipoteses"), { autoAlpha: 1, duration: 0.4 }, tHip)
-      .to(frases, { autoAlpha: 1, duration: 0.4, stagger: 0.12 }, tHip + 0.2)
+    const tHip = 0.3 + perguntasEls.length * 1.9 + 0.2;
+    tl.to(cena("perguntas"), { opacity: 0, duration: 0.35 }, tHip - 0.15);
+    tl.to(cena("hipoteses"), { opacity: 1, duration: 0.4 }, tHip)
+      .to(frases, { opacity: 1, duration: 0.4, stagger: 0.12 }, tHip + 0.2)
       .to(
         frases,
         {
@@ -511,12 +539,12 @@ const blocos = [
         },
         tHip + 0.9,
       )
-      .to(cena("hipoteses"), { autoAlpha: 0, duration: 0.5 }, tHip + 2.6);
+      .to(cena("hipoteses"), { opacity: 0, duration: 0.5 }, tHip + 2.6);
 
     // Ato 3 — a linha se desenha pelas palavras
     const tFluxo = tHip + 3.1;
-    tl.to(cena("fluxo"), { autoAlpha: 1, duration: 0.4 }, tFluxo);
-    tl.to(nos, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.25 }, tFluxo + 0.2);
+    tl.to(cena("fluxo"), { opacity: 1, duration: 0.4 }, tFluxo);
+    tl.to(nos, { opacity: 1, y: 0, duration: 0.5, stagger: 0.25 }, tFluxo + 0.2);
     tracos.forEach((p, i) => {
       tl.to(
         p,
@@ -524,13 +552,13 @@ const blocos = [
         tFluxo + 0.5 + i * 0.4,
       );
     });
-    tl.to(cena("fluxo"), { autoAlpha: 0, duration: 0.5 }, tFluxo + 3.4);
+    tl.to(cena("fluxo"), { opacity: 0, duration: 0.5 }, tFluxo + 3.4);
 
     // Ato 4 — testes e descartes (vermelho)
     const tDesc = tFluxo + 3.9;
-    tl.to(cena("descartes"), { autoAlpha: 1, duration: 0.4 }, tDesc).to(
+    tl.to(cena("descartes"), { opacity: 1, duration: 0.4 }, tDesc).to(
       descartesEls,
-      { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.15 },
+      { opacity: 1, y: 0, duration: 0.5, stagger: 0.15 },
       tDesc + 0.2,
     );
     riscos.forEach((r, i) => {
@@ -543,15 +571,15 @@ const blocos = [
         tDesc + 3.1,
       );
     }
-    tl.to(cena("descartes"), { autoAlpha: 0, duration: 0.5 }, tDesc + 3.8);
+    tl.to(cena("descartes"), { opacity: 0, duration: 0.5 }, tDesc + 3.8);
 
     // Ato 5 — consequência (fica em cena até o pin soltar)
     const tCons = tDesc + 4.3;
-    tl.to(cena("consequencia"), { autoAlpha: 1, duration: 0.4 }, tCons)
+    tl.to(cena("consequencia"), { opacity: 1, duration: 0.4 }, tCons)
       .to(
         tiles,
         {
-          autoAlpha: 1,
+          opacity: 1,
           y: 0,
           scale: 1,
           duration: 0.7,
@@ -560,7 +588,7 @@ const blocos = [
         },
         tCons + 0.2,
       )
-      .to(frase, { autoAlpha: 1, y: 0, duration: 0.6 }, tCons + 0.8)
+      .to(frase, { opacity: 1, y: 0, duration: 0.6 }, tCons + 0.8)
       .to({}, { duration: 0.8 }, tCons + 1.4); // respiro final antes de soltar
   });
 </script>

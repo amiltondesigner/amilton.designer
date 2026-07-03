@@ -61,6 +61,21 @@ export default function ConceptMap({ casos = [] }: { casos?: Caso[] }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [vista, setVista] = useState<"mapa" | "manifesto">("mapa");
 
+  const noBtn = (no: (typeof mapNodes)[number], i: number) => (
+    <button
+      key={no.id}
+      type="button"
+      class="mapa-no"
+      style={`--i:${i}; --x:${POSICOES[no.id].x}%; --y:${POSICOES[no.id].y}%`}
+      onClick={() =>
+        no.id === "manifesto" ? setVista("manifesto") : irPara(no.href)
+      }
+    >
+      <span class="mapa-no-rotulo">{no.label}</span>
+      <span class="mapa-no-desc">{no.desc}</span>
+    </button>
+  );
+
   function abrir() {
     dialogRef.current?.showModal();
     lenis()?.stop();
@@ -166,35 +181,25 @@ export default function ConceptMap({ casos = [] }: { casos?: Caso[] }) {
               ))}
             </svg>
             <div class="mapa-nos">
-              {mapNodes.map((no, i) => (
-                <button
-                  key={no.id}
-                  type="button"
-                  class="mapa-no"
-                  style={`--i:${i}; --x:${POSICOES[no.id].x}%; --y:${POSICOES[no.id].y}%`}
-                  onClick={() =>
-                    no.id === "manifesto"
-                      ? setVista("manifesto")
-                      : irPara(no.href)
-                  }
-                >
-                  <span class="mapa-no-rotulo">{no.label}</span>
-                  <span class="mapa-no-desc">{no.desc}</span>
-                </button>
-              ))}
+              {/* ordem do DOM = ordem de leitura na lista mobile:
+                  satélites logo depois de "As provas", a quem pertencem */}
+              {mapNodes.slice(0, 3).map((no, i) => noBtn(no, i))}
               {casos.map((c, i) => (
                 <a
                   key={c.id}
                   class="mapa-no mapa-caso"
                   href={`/trabalho/${c.id}`}
-                  style={`--i:${mapNodes.length + i}; --x:${SATELITES[i % SATELITES.length].x}%; --y:${SATELITES[i % SATELITES.length].y}%`}
+                  style={`--i:${3 + i}; --x:${SATELITES[i % SATELITES.length].x}%; --y:${SATELITES[i % SATELITES.length].y}%`}
                   onClick={() => dialogRef.current?.close()}
                 >
                   <span class="mapa-no-rotulo">{c.title}</span>
                 </a>
               ))}
+              {mapNodes
+                .slice(3)
+                .map((no, i) => noBtn(no, 3 + casos.length + i))}
             </div>
-            <p class="mapa-dica" aria-hidden="true">
+            <p class="mapa-dica hidden md:block" aria-hidden="true">
               esc fecha
             </p>
           </div>

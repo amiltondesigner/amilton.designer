@@ -133,7 +133,8 @@ export default function WhatsAppBuilder() {
       </div>
 
       {expandido && (
-        <div id="construtor-whatsapp" class="mt-10">
+        // pb-28 no mobile: o CTA fixo não pode cobrir os últimos campos
+        <div id="construtor-whatsapp" class="mt-10 pb-28 lg:pb-0">
           {/* Grupos de opções */}
           <div
             ref={construtorRef}

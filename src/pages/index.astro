@@ -15,12 +15,7 @@ const casos = (await getCollection("projects"))
 ---
 
 <Base>
-  <a
-    href="#descoberta"
-    class="btn btn-accent sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50"
-  >
-    Pular a abertura
-  </a>
+  <a href="#descoberta" class="skip-link"> Pular a abertura </a>
   <ConceptMap client:idle casos={casos} />
   <main>
     <Abertura />
