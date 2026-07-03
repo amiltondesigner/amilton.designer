@@ -102,11 +102,63 @@ export function registerScene(setup: SceneSetup) {
   sceneSetups.push(setup);
 }
 
+/**
+ * Reveals genéricos — o conteúdo nasce visível no HTML (mobile, no-JS e
+ * reduced-motion nunca dependem disto); o estado inicial escondido só é
+ * aplicado quando o contexto de cenas ativa, e o revert() devolve tudo.
+ *
+ * - [data-anima]           rise (padrão) | "fade" | "scale"
+ * - [data-anima-delay]     atraso em segundos
+ * - [data-anima-grupo]     anima os filhos diretos com stagger
+ */
+function setupReveals() {
+  const base = {
+    duration: 0.9,
+    ease: "expo.out",
+  } as const;
+
+  gsap.utils.toArray<HTMLElement>("[data-anima]").forEach((el) => {
+    const tipo = el.dataset.anima || "rise";
+    const vars: gsap.TweenVars = {
+      ...base,
+      autoAlpha: 0,
+      delay: parseFloat(el.dataset.animaDelay || "0"),
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      },
+    };
+    if (tipo === "rise") vars.y = 28;
+    if (tipo === "scale") {
+      vars.scale = 0.96;
+      vars.y = 12;
+    }
+    gsap.from(el, vars);
+  });
+
+  gsap.utils.toArray<HTMLElement>("[data-anima-grupo]").forEach((grupo) => {
+    gsap.from(grupo.children, {
+      ...base,
+      autoAlpha: 0,
+      y: 18,
+      duration: 0.7,
+      stagger: 0.07,
+      scrollTrigger: {
+        trigger: grupo,
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      },
+    });
+  });
+}
+
 function initScenes(): Cleanup {
   const mm = gsap.matchMedia();
   mm.add(SCENES_MEDIA, () => {
     // setups re-consultam o DOM a cada chamada (sobrevivem a navegações)
     const ctx = gsap.context((self) => {
+      setupReveals();
       sceneSetups.forEach((setup) => setup(self!));
     });
     return () => ctx.revert();

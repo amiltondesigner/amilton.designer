@@ -43,11 +43,17 @@ const blocos = [
   class="scroll-mt-24 py-28 md:py-44"
 >
   <div class="wrap">
-    <p class="kicker text-accent">Capítulo 03 · Como eu penso</p>
-    <h2 class="display-2 mt-6 max-w-[16ch]">
+    <p class="kicker text-accent" data-anima="fade">
+      Capítulo 03 · Como eu penso
+    </p>
+    <h2 class="display-2 mt-6 max-w-[16ch]" data-anima>
       Nenhuma tela minha nasce na tela.
     </h2>
-    <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted">
+    <p
+      class="mt-6 max-w-xl text-lg leading-relaxed text-muted"
+      data-anima
+      data-anima-delay="0.1"
+    >
       Ela nasce de perguntas, hipóteses, rabiscos, testes e uma pilha de
       descartes. O que você vê no final é só a parte que sobreviveu.
     </p>
@@ -56,7 +62,7 @@ const blocos = [
   <div class="wrap mt-20 grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2">
     {
       blocos.map((b) => (
-        <article id={b.id} class="scroll-mt-32 max-w-xl">
+        <article id={b.id} class="scroll-mt-32 max-w-xl" data-anima>
           <div class="flex items-baseline gap-4">
             <span class="font-display text-sm font-medium tabular-nums text-faint">
               {b.numero}
@@ -73,7 +79,7 @@ const blocos = [
 
   <div class="impact mt-24 py-20 md:py-28">
     <div class="wrap">
-      <p class="display-2 max-w-[18ch]">
+      <p class="display-2 max-w-[18ch]" data-anima>
         O projeto final é consequência. Nunca ponto de partida.
       </p>
     </div>

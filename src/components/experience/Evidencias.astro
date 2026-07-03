@@ -17,12 +17,12 @@ const projects = (await getCollection("projects")).sort(
   data-chapter-section="evidencias"
   class="wrap scroll-mt-24 py-28 md:py-44"
 >
-  <p class="kicker text-accent">Capítulo 04 · As provas</p>
+  <p class="kicker text-accent" data-anima="fade">Capítulo 04 · As provas</p>
   <div class="mt-6 flex flex-wrap items-end justify-between gap-6">
-    <h2 class="display-2 max-w-[16ch]">
+    <h2 class="display-2 max-w-[16ch]" data-anima>
       Projetos não abrem esta história. Comprovam.
     </h2>
-    <span class="text-sm tabular-nums text-faint">
+    <span class="text-sm tabular-nums text-faint" data-anima="fade">
       {String(projects.length).padStart(2, "0")} evidências
     </span>
   </div>
@@ -34,6 +34,7 @@ const projects = (await getCollection("projects")).sort(
       projects.map((p, i) => (
         <a
           href={`/trabalho/${p.id}`}
+          data-anima="scale"
           class:list={[
             "group block",
             p.data.span === "wide" ? "md:col-span-7" : "md:col-span-5",
