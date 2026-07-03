@@ -83,6 +83,8 @@ function initLenis(): Cleanup {
     duration: 1.1,
     smoothWheel: true,
     autoRaf: false,
+    // âncoras internas (skip link, cue, mapa) passam pelo próprio Lenis
+    anchors: true,
   });
   window.__lenis = lenis;
   lenis.on("scroll", ScrollTrigger.update);
@@ -117,11 +119,13 @@ function setupReveals() {
     ease: "expo.out",
   } as const;
 
+  // opacity (nunca visibility): elementos com links/botões continuam
+  // focáveis pra teclado; o CSS de :focus-within revela na hora.
   gsap.utils.toArray<HTMLElement>("[data-anima]").forEach((el) => {
     const tipo = el.dataset.anima || "rise";
     const vars: gsap.TweenVars = {
       ...base,
-      autoAlpha: 0,
+      opacity: 0,
       delay: parseFloat(el.dataset.animaDelay || "0"),
       scrollTrigger: {
         trigger: el,
@@ -140,7 +144,7 @@ function setupReveals() {
   gsap.utils.toArray<HTMLElement>("[data-anima-grupo]").forEach((grupo) => {
     gsap.from(grupo.children, {
       ...base,
-      autoAlpha: 0,
+      opacity: 0,
       y: 18,
       duration: 0.7,
       stagger: 0.07,

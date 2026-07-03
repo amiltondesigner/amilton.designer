@@ -8,11 +8,13 @@
     "build": "astro build",
     "check": "astro check",
     "preview": "astro preview",
+    "test": "playwright test",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.0",
     "@astrojs/preact": "^6.0.0",
+    "@astrojs/sitemap": "^3.7.3",
     "@fontsource-variable/inter": "^5.2.8",
     "@preact/signals": "^2.9.2",
     "@tailwindcss/vite": "^4.3.1",
