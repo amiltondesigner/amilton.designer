@@ -58,7 +58,7 @@ test.describe("overlay de cases", () => {
     const overlay = page.locator(".case-overlay");
     await expect(overlay).toHaveAttribute("open", "");
     await expect(page).toHaveURL(/\/trabalho\/greensync/);
-    await expect(overlay.locator("h1")).toContainText("GreenSync");
+    await expect(overlay.locator("h1")).toContainText("energia solar");
 
     await page.keyboard.press("Escape");
     await expect(overlay).not.toHaveAttribute("open", "");
@@ -67,7 +67,7 @@ test.describe("overlay de cases", () => {
 
   test("deep-link renderiza a página completa do case", async ({ page }) => {
     await page.goto("/trabalho/serenity/", { waitUntil: "networkidle" });
-    await expect(page.locator("h1")).toContainText("Serenity");
+    await expect(page.locator("h1")).toContainText("App de meditação");
     await expect(page.locator('article[data-case-conteudo]')).toBeAttached();
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       "href",
@@ -124,7 +124,7 @@ test.describe("mapa conceitual", () => {
     const overlay = page.locator(".case-overlay");
     await expect(overlay).toHaveAttribute("open", "");
     await expect(page).toHaveURL(/\/trabalho\/serenity/);
-    await expect(overlay.locator("h1")).toContainText("Serenity");
+    await expect(overlay.locator("h1")).toContainText("App de meditação");
     await expect(page.locator(".mapa-overlay")).not.toHaveAttribute(
       "open",
       "",
@@ -220,7 +220,7 @@ test.describe("acessibilidade (axe)", () => {
   test("overlay aberto sem violações", async ({ page }) => {
     await page.goto("/", { waitUntil: "networkidle" });
     await page.click('#evidencias a[href="/trabalho/greensync"]');
-    await expect(page.locator(".case-overlay h1")).toContainText("GreenSync");
+    await expect(page.locator(".case-overlay h1")).toContainText("energia solar");
     await esperaAxeZero(page);
   });
 
