@@ -1,12 +1,10 @@
 ---
 /**
- * Página de trabalho — casting tipográfico + paletas da v2.
+ * Specimen do sistema visual v2 — página de trabalho local.
  * Não entra no site final: remover (ou bloquear) antes do deploy.
- * Clash Display vem do CDN da Fontshare SÓ aqui; se aprovada, baixamos os woff2.
+ * Fonte aprovada no casting de 2026-07-03: Clash Display (self-host).
  */
 import "@fontsource-variable/inter/index.css";
-import "@fontsource-variable/bricolage-grotesque/index.css";
-import "@fontsource-variable/syne/index.css";
 import { chapters, descarte, paper } from "../../config/chapters";
 
 /* Contraste WCAG 2.x */
@@ -25,33 +23,6 @@ function ratio(a: string, b: string): number {
 }
 const fmt = (n: number) => n.toFixed(2).replace(".", ",");
 
-const candidates = [
-  {
-    id: "bricolage",
-    letra: "A",
-    nome: "Bricolage Grotesque",
-    family: '"Bricolage Grotesque Variable", sans-serif',
-    pesos: [300, 400, 500, 600, 700, 800],
-    nota: "Expressiva e quente. Curvas com personalidade, mas segue grotesque: não briga com a Inter no corpo.",
-  },
-  {
-    id: "clash",
-    letra: "B",
-    nome: "Clash Display",
-    family: '"Clash Display", sans-serif',
-    pesos: [400, 500, 600, 700],
-    nota: "Display contemporânea de verdade. Cortes angulares característicos, presença editorial forte.",
-  },
-  {
-    id: "syne",
-    letra: "C",
-    nome: "Syne",
-    family: '"Syne Variable", sans-serif',
-    pesos: [400, 500, 600, 700, 800],
-    nota: "A mais artística das três. Geometria estranha no jeito bom; risco e caráter em doses maiores.",
-  },
-];
-
 const checksFor = (p: (typeof chapters)[number]["palette"]) => [
   { rotulo: "Texto principal sobre fundo", fg: p.foreground, bg: p.background },
   { rotulo: "Texto secundário sobre fundo", fg: p.muted, bg: p.background },
@@ -67,56 +38,40 @@ const checksFor = (p: (typeof chapters)[number]["palette"]) => [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <title>Casting tipográfico · Portfolio Experience v2</title>
-    <link
-      rel="stylesheet"
-      href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap"
-    />
+    <title>Specimen · Portfolio Experience v2</title>
   </head>
   <body>
     <header class="topo">
-      <p class="eyebrow">Portfolio Experience v2 · Fase 1</p>
-      <h1>Casting tipográfico + paletas dos capítulos</h1>
+      <p class="eyebrow">Portfolio Experience v2 · Sistema visual</p>
+      <h1>Specimen: Clash Display + Inter + as cinco atmosferas</h1>
       <p class="lede">
-        Três candidatas a display autoral (o corpo segue Inter). Abaixo, as
-        cinco atmosferas de capítulo com os contrastes calculados ao vivo.
+        Fonte display aprovada no casting (2026-07-03). Corpo segue Inter.
+        Contrastes recalculados ao vivo a cada mudança de paleta.
       </p>
     </header>
 
-    {
-      candidates.map((c) => (
-        <section class="cand" id={`cand-${c.id}`}>
-          <div class="cand-meta">
-            <span class="badge">{c.letra}</span>
-            <div>
-              <h2>{c.nome}</h2>
-              <p>{c.nota}</p>
-            </div>
-          </div>
+    <section class="cand" id="clash">
+      <div class="hero-mock">
+        <p class="eyebrow">UI/UX Designer Sênior · 15+ anos</p>
+        <p class="nome">
+          Amilton<br />Schlemper
+        </p>
+        <p class="tag">
+          Crio produtos digitais fáceis de usar e difíceis de esquecer.
+        </p>
+        <p class="frase">O pensamento vem antes da tela.</p>
+      </div>
 
-          <div class="hero-mock" style={`--display: ${c.family}`}>
-            <p class="eyebrow">UI/UX Designer Sênior · 15+ anos</p>
-            <p class="nome">
-              Amilton<br />Schlemper
-            </p>
-            <p class="tag">
-              Crio produtos digitais fáceis de usar e difíceis de esquecer.
-            </p>
-            <p class="frase">O pensamento vem antes da tela.</p>
-          </div>
-
-          <div class="specimen" style={`--display: ${c.family}`}>
-            <div class="pesos">
-              {c.pesos.map((w) => (
-                <span style={`font-weight: ${w}`}>Aa {w}</span>
-              ))}
-            </div>
-            <p class="glifos">Ação, decisão, hipótese: çãõáéíóúê · 0123456789</p>
-            <p class="kicker">perguntas, rabiscos, testes, descartes</p>
-          </div>
-        </section>
-      ))
-    }
+      <div class="specimen">
+        <div class="pesos">
+          {[300, 400, 500, 600, 700].map((w) => (
+            <span style={`font-weight: ${w}`}>Aa {w}</span>
+          ))}
+        </div>
+        <p class="glifos">Ação, decisão, hipótese: çãõáéíóúê · 0123456789</p>
+        <p class="kicker">perguntas, rabiscos, testes, descartes</p>
+      </div>
+    </section>
 
     <section class="paletas" id="paletas">
       <h2 class="secao-titulo">As cinco atmosferas</h2>
@@ -201,19 +156,27 @@ const checksFor = (p: (typeof chapters)[number]["palette"]) => [
 
     <footer class="rodape">
       <p>
-        Página de trabalho local. Corpo de texto em todas as opções: Inter
-        Variable. A escolhida vira o token <code>--font-display</code> na Fase 1b.
+        Página de trabalho local. Tokens reais em <code>src/styles/global.css</code>
+        e <code>src/config/chapters.ts</code>; fonte em
+        <code>public/fonts/ClashDisplay-Variable.woff2</code>.
       </p>
     </footer>
   </body>
 </html>
 
 <style>
+  @font-face {
+    font-family: "Clash Display";
+    src: url("/fonts/ClashDisplay-Variable.woff2") format("woff2");
+    font-weight: 200 700;
+    font-display: swap;
+  }
   :root {
     --ink: #1c1917;
     --muted: #57534e;
     --bg: #faf9f6;
     --line: #e7e0d8;
+    --display: "Clash Display", sans-serif;
   }
   * {
     margin: 0;
@@ -251,40 +214,9 @@ const checksFor = (p: (typeof chapters)[number]["palette"]) => [
     border-top: 1px solid var(--line);
     padding: 3.5rem 6vw 4rem;
   }
-  .cand-meta {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    max-width: 46rem;
-  }
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 999px;
-    background: var(--ink);
-    color: var(--bg);
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-  .cand-meta h2 {
-    font-size: 1.15rem;
-    letter-spacing: -0.01em;
-  }
-  .cand-meta p {
-    color: var(--muted);
-    font-size: 0.95rem;
-    margin-top: 0.25rem;
-  }
-
-  .hero-mock {
-    margin-top: 2.5rem;
-  }
   .hero-mock .nome {
     font-family: var(--display);
-    font-weight: 700;
+    font-weight: 600;
     font-size: clamp(3.5rem, 11vw, 9rem);
     line-height: 0.95;
     letter-spacing: -0.02em;
@@ -359,8 +291,10 @@ const checksFor = (p: (typeof chapters)[number]["palette"]) => [
     text-transform: uppercase;
   }
   .cap-nome {
+    font-family: var(--display);
     font-size: 2rem;
-    letter-spacing: -0.02em;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     margin-top: 0.5rem;
   }
   .cap-papel {

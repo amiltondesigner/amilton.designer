@@ -1,5 +1,17 @@
 # Design System — Portfólio Amilton Schlemper (MASTER)
 
+> ## ⚠️ v2 — Portfolio Experience (2026-07-03)
+> Este arquivo descreve o sistema **v1/Framer (legado)**. A v2 em código segue outra direção:
+> - **Visão:** `docs/VISION.md` (fonte da verdade da experiência)
+> - **Paletas por capítulo:** `src/config/chapters.ts` (claro quente + 1 dominante por capítulo; sai o dark-only)
+> - **Tokens vivos:** `src/styles/global.css` (`--ch-*` interpoláveis via `@property`, trocadas por `data-chapter` no body)
+> - **Tipografia v2:** **Clash Display** (display autoral, self-host em `public/fonts/`) + **Inter** no corpo. Casting aprovado em 2026-07-03; Space Grotesk/Archivo seguem vetadas.
+> - Specimen vivo: `/dev/type` (contrastes AA recalculados ao vivo)
+
+---
+
+## Legado v1 (Framer, dark-only)
+
 Fonte da verdade para a revisão premium. **Dark-only** (sem switch de tema) — convertido em 2026-06-23 remapeando os tokens.
 Projeto Framer `mCwjzR1jj2V4k7Bh1V4F` · sessão `1` · relay port `19989`.
 

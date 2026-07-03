@@ -1,25 +1,114 @@
+/* ============================================================
+   Portfolio Experience v2 — sistema visual
+   Fonte da verdade: docs/VISION.md + src/config/chapters.ts
+   Base clara quente; a cor conta a história (uma dominante por
+   capítulo, trocada via [data-chapter] no <body> e interpolada
+   com @property).
+   ============================================================ */
+
+/* Clash Display — display autoral (self-host, licença ITF FFL) */
+@font-face {
+  font-family: "Clash Display";
+  src: url("/fonts/ClashDisplay-Variable.woff2") format("woff2");
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @import "tailwindcss";
 
 /* ============================================================
-   Design tokens — dark-native (grafite + azul cirúrgico)
-   Evolução de design-system/MASTER.md
+   Variáveis de capítulo — registradas pra interpolar na troca.
+   Valores por capítulo vêm de src/config/chapters.ts (espelho).
+   ============================================================ */
+@property --ch-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #faf6f0;
+}
+@property --ch-fg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1c1917;
+}
+@property --ch-muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #57534e;
+}
+@property --ch-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #44403c;
+}
+@property --ch-deep {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1c1917;
+}
+
+:root {
+  /* Capítulo 01 — Abertura (padrão) */
+  --ch-bg: #faf6f0;
+  --ch-fg: #1c1917;
+  --ch-muted: #57534e;
+  --ch-accent: #44403c;
+  --ch-deep: #1c1917;
+}
+body[data-chapter="descoberta"] {
+  --ch-bg: #eef3fb;
+  --ch-fg: #131a26;
+  --ch-muted: #475569;
+  --ch-accent: #2b5ce0;
+  --ch-deep: #16308c;
+}
+body[data-chapter="pensamento"] {
+  --ch-bg: #fbf2e9;
+  --ch-fg: #201509;
+  --ch-muted: #635247;
+  --ch-accent: #c2410c;
+  --ch-deep: #9a3412;
+}
+body[data-chapter="evidencias"] {
+  --ch-bg: #eef6ee;
+  --ch-fg: #101913;
+  --ch-muted: #48594c;
+  --ch-accent: #15803d;
+  --ch-deep: #14532d;
+}
+body[data-chapter="conexao"] {
+  --ch-bg: #f3f0fa;
+  --ch-fg: #171221;
+  --ch-muted: #564d6b;
+  --ch-accent: #6d28d9;
+  --ch-deep: #4c1d95;
+}
+
+/* ============================================================
+   Tokens semânticos (Tailwind v4) — resolvem nas vars de capítulo,
+   então todo o site muda de atmosfera junto.
    ============================================================ */
 @theme {
-  /* Tipografia — Inter variável (opsz dá comportamento "Display") */
+  /* Tipografia — Clash Display (protagonista) + Inter (corpo) */
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Clash Display", "Inter Variable", ui-sans-serif, system-ui,
+    sans-serif;
 
-  /* Cores */
-  --color-background: #0b0b0d;
-  --color-surface: #18181b;
-  --color-surface-2: #1f1f23;
-  --color-border: #27272a;
-  --color-foreground: #fafafa;
-  --color-muted: #a1a1aa;
-  --color-faint: #85858d;
-  --color-accent: #3d6dfd;
-  --color-accent-strong: #2e52dd;
-  --color-accent-deep: #2440bd;
+  /* Cores narrativas */
+  --color-background: var(--ch-bg);
+  --color-foreground: var(--ch-fg);
+  --color-muted: var(--ch-muted);
+  --color-accent: var(--ch-accent);
+  --color-deep: var(--ch-deep);
+
+  /* Derivadas — acompanham o capítulo automaticamente */
+  --color-surface: color-mix(in oklab, #ffffff 58%, var(--ch-bg));
+  --color-border: color-mix(in oklab, var(--ch-fg) 14%, var(--ch-bg));
+  --color-faint: color-mix(in oklab, var(--ch-muted) 74%, var(--ch-bg));
+
+  /* Fixas */
+  --color-paper: #fafaf7; /* texto claro sobre fundos deep */
+  --color-descarte: #d92d20; /* só nos descartes do Pensamento */
   --color-whatsapp: #25d366;
 
   /* Raios concêntricos */
@@ -28,9 +117,10 @@
   --radius-lg: 1.25rem;
   --radius-xl: 1.75rem;
 
-  /* Easing assinatura */
+  /* Easing assinatura — peso e inércia (ver VISION.md, Movimento) */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-soft: cubic-bezier(0.45, 0, 0.15, 1);
 }
 
 /* ============================================================
@@ -40,32 +130,35 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    background-color: #faf6f0; /* overscroll sempre quente */
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--ch-bg);
+    color: var(--ch-fg);
     font-family: var(--font-sans);
     font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /* a atmosfera do capítulo se dissolve na próxima, nunca corta */
+    transition-property: --ch-bg, --ch-fg, --ch-muted, --ch-accent, --ch-deep;
+    transition-duration: 0.9s;
+    transition-timing-function: var(--ease-soft);
   }
 
   ::selection {
-    background-color: var(--color-accent);
+    background-color: var(--ch-accent);
     color: #fff;
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--ch-accent);
     outline-offset: 2px;
   }
 }
 
-/* ============================================================
-   Acessibilidade — respeita reduced motion
-   ============================================================ */
+/* Acessibilidade — respeita reduced motion (a cor ainda muda, só que direto) */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -80,12 +173,12 @@
 }
 
 /* ============================================================
-   Componentes / utilitários reutilizáveis
+   Componentes / utilitários
    ============================================================ */
 @layer components {
   .wrap {
     width: 100%;
-    max-width: 88rem; /* ~1408px */
+    max-width: 88rem;
     margin-inline: auto;
     padding-inline: 1.5rem;
   }
@@ -108,6 +201,35 @@
     color: var(--color-muted);
   }
 
+  /* Escala display — Clash assume o palco */
+  .display-1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.75rem, 9.5vw, 8.75rem);
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+  }
+  .display-2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2rem, 5.5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .kicker {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Momento de impacto — o fundo inunda com a versão profunda */
+  .impact {
+    background-color: var(--color-deep);
+    color: var(--color-paper);
+  }
+
   .btn {
     display: inline-flex;
     align-items: center;
@@ -125,11 +247,11 @@
       border-color 0.3s ease;
   }
   .btn-accent {
-    background-color: var(--color-accent-strong);
+    background-color: var(--color-accent);
     color: #fff;
   }
   .btn-accent:hover {
-    background-color: var(--color-accent-deep);
+    background-color: var(--color-deep);
   }
   .btn-ghost {
     border: 1px solid var(--color-border);
@@ -139,7 +261,7 @@
     border-color: var(--color-muted);
     background-color: var(--color-surface);
   }
-  /* Verde do WhatsApp — só no envio. Texto escuro p/ passar contraste AA. */
+  /* Verde do WhatsApp — só no envio. Texto escuro p/ contraste AA. */
   .btn-whatsapp {
     background-color: var(--color-whatsapp);
     color: #08130b;
@@ -148,7 +270,6 @@
     background-color: #20c25c;
   }
 
-  /* Link com sublinhado animado (origin troca no hover) */
   .link-line {
     position: relative;
   }
@@ -168,56 +289,49 @@
     transform: scaleX(1);
     transform-origin: left;
   }
-}
 
-/* ============================================================
-   Reveal on-scroll — progressive enhancement.
-   Sem JS / reduced-motion → conteúdo visível por padrão.
-   ============================================================ */
-.reveal-ready [data-reveal] {
-  opacity: 0;
-  transform: translateY(1.25rem);
-  transition:
-    opacity 0.7s var(--ease-out-expo),
-    transform 0.7s var(--ease-out-expo);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-/* Variantes pra o reveal não ser uniforme: imagens/cards entram com leve scale */
-.reveal-ready [data-reveal="scale"] {
-  transform: scale(0.97);
-}
-.reveal-ready [data-reveal="fade"] {
-  transform: none;
-}
-.reveal-ready [data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
-}
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+    padding: 0.55rem 1rem;
+    min-height: 2.5rem;
+    font-size: 0.9rem;
+    line-height: 1;
+    color: var(--color-muted);
+    transition:
+      border-color 0.3s var(--ease-out-quart),
+      background-color 0.3s var(--ease-out-quart),
+      color 0.3s var(--ease-out-quart);
+  }
+  .chip:hover {
+    border-color: var(--color-muted);
+    color: var(--color-foreground);
+  }
+  .chip-on {
+    border-color: var(--color-accent);
+    background-color: color-mix(in oklab, var(--color-accent) 12%, transparent);
+    color: var(--color-foreground);
+  }
 
-/* Brilho sutil do hero (sem WebGL) */
-.hero-glow {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-}
-.hero-glow::before {
-  content: "";
-  position: absolute;
-  top: -25%;
-  right: -8%;
-  width: 60vw;
-  height: 60vw;
-  max-width: 700px;
-  max-height: 700px;
-  border-radius: 9999px;
-  background: radial-gradient(
-    circle at center,
-    color-mix(in oklab, var(--color-accent) 20%, transparent),
-    transparent 62%
-  );
-  filter: blur(48px);
+  .field {
+    width: 100%;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+    color: var(--color-foreground);
+    transition: border-color 0.3s ease;
+  }
+  .field::placeholder {
+    color: var(--color-faint);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
 }
 
 /* ============================================================
@@ -248,53 +362,4 @@
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background-color: var(--color-surface);
-}
-/* Texto e imagens compartilham a mesma largura de coluna (830px) */
-
-/* ============================================================
-   Construtor de mensagem — chips e campos
-   ============================================================ */
-@layer components {
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    border-radius: 9999px;
-    border: 1px solid var(--color-border);
-    padding: 0.55rem 1rem;
-    min-height: 2.5rem;
-    font-size: 0.9rem;
-    line-height: 1;
-    color: var(--color-muted);
-    transition:
-      border-color 0.3s var(--ease-out-quart),
-      background-color 0.3s var(--ease-out-quart),
-      color 0.3s var(--ease-out-quart);
-  }
-  .chip:hover {
-    border-color: var(--color-muted);
-    color: var(--color-foreground);
-  }
-  .chip-on {
-    border-color: var(--color-accent);
-    background-color: color-mix(in oklab, var(--color-accent) 14%, transparent);
-    color: var(--color-foreground);
-  }
-
-  .field {
-    width: 100%;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-border);
-    background-color: var(--color-background);
-    padding: 0.7rem 0.9rem;
-    font-size: 0.95rem;
-    color: var(--color-foreground);
-    transition: border-color 0.3s ease;
-  }
-  .field::placeholder {
-    color: var(--color-faint);
-  }
-  .field:focus {
-    outline: none;
-    border-color: var(--color-accent);
-  }
 }

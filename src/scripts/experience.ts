@@ -1,0 +1,130 @@
+/**
+ * Orquestrador da Portfolio Experience (ver docs/VISION.md).
+ *
+ * Três responsabilidades, com camadas independentes:
+ * 1. Tema por capítulo — IntersectionObserver no MEIO da viewport troca
+ *    `data-chapter` no <body>. Roda sempre (mobile e reduced-motion
+ *    incluídos): a cor é conteúdo, não efeito. A interpolação suave fica
+ *    no CSS (@property); com reduced-motion ela vira troca seca.
+ * 2. Lenis — scroll com inércia, dirigido pelo ticker do GSAP (uma única
+ *    fonte de tempo). Instância única que sobrevive às View Transitions.
+ * 3. Cenas GSAP/ScrollTrigger — só desktop com motion (gsap.matchMedia).
+ *    As cenas dos capítulos são registradas aqui pelas Fases 3-4.
+ *
+ * Ciclo de vida (Astro ClientRouter):
+ *   astro:page-load  → initExperience()
+ *   astro:before-swap → destroyExperience() (mata todos os ScrollTriggers;
+ *   Lenis sobrevive de propósito)
+ */
+import Lenis from "lenis";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+declare global {
+  interface Window {
+    __lenis?: Lenis;
+  }
+}
+
+/** Cenas pesadas só aqui: desktop, ponteiro fino, sem reduced-motion. */
+export const SCENES_MEDIA =
+  "(min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
+
+type Cleanup = () => void;
+let cleanups: Cleanup[] = [];
+
+const prefersReduced = () =>
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ------------------------------------------------------------------ */
+/* 1. Tema por capítulo                                                */
+/* ------------------------------------------------------------------ */
+function initChapterTheme(): Cleanup {
+  const sections = document.querySelectorAll<HTMLElement>(
+    "[data-chapter-section]",
+  );
+  if (!sections.length) {
+    // páginas fora da experiência (cases, 404) ficam na atmosfera padrão
+    delete document.body.dataset.chapter;
+    return () => {};
+  }
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const ch = (e.target as HTMLElement).dataset.chapterSection;
+        if (ch && document.body.dataset.chapter !== ch) {
+          document.body.dataset.chapter = ch;
+        }
+      }
+    },
+    // faixa estreita no meio da viewport: o capítulo "ativo" é o que
+    // cruza o centro do olhar, não o que encosta na borda
+    { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
+  );
+  sections.forEach((s) => io.observe(s));
+  return () => io.disconnect();
+}
+
+/* ------------------------------------------------------------------ */
+/* 2. Lenis + ponte com ScrollTrigger                                  */
+/* ------------------------------------------------------------------ */
+function tickLenis(time: number) {
+  window.__lenis?.raf(time * 1000);
+}
+
+function initLenis(): Cleanup {
+  if (prefersReduced() || window.__lenis) return () => {};
+
+  const lenis = new Lenis({
+    duration: 1.1,
+    smoothWheel: true,
+    autoRaf: false,
+  });
+  window.__lenis = lenis;
+  lenis.on("scroll", ScrollTrigger.update);
+  gsap.ticker.add(tickLenis);
+  gsap.ticker.lagSmoothing(0);
+  return () => {};
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. Cenas por capítulo (registradas nas Fases 3-4)                   */
+/* ------------------------------------------------------------------ */
+type SceneSetup = (ctx: gsap.Context) => void;
+const sceneSetups: SceneSetup[] = [];
+
+/** Componentes registram cenas antes do page-load disparar. */
+export function registerScene(setup: SceneSetup) {
+  sceneSetups.push(setup);
+}
+
+function initScenes(): Cleanup {
+  const mm = gsap.matchMedia();
+  mm.add(SCENES_MEDIA, () => {
+    // setups re-consultam o DOM a cada chamada (sobrevivem a navegações)
+    const ctx = gsap.context((self) => {
+      sceneSetups.forEach((setup) => setup(self!));
+    });
+    return () => ctx.revert();
+  });
+  return () => mm.revert();
+}
+
+/* ------------------------------------------------------------------ */
+/* Ciclo de vida                                                       */
+/* ------------------------------------------------------------------ */
+export function initExperience() {
+  destroyExperience();
+  cleanups = [initChapterTheme(), initLenis(), initScenes()];
+  ScrollTrigger.refresh();
+}
+
+export function destroyExperience() {
+  cleanups.forEach((c) => c());
+  cleanups = [];
+  ScrollTrigger.getAll().forEach((t) => t.kill());
+}

@@ -1,20 +1,24 @@
 ---
 import Base from "../layouts/Base.astro";
-import Nav from "../components/Nav.astro";
-import Hero from "../components/Hero.astro";
-import Work from "../components/Work.astro";
-import About from "../components/About.astro";
-import Contact from "../components/Contact.astro";
-import Footer from "../components/Footer.astro";
+import Abertura from "../components/experience/Abertura.astro";
+import Descoberta from "../components/experience/Descoberta.astro";
+import Pensamento from "../components/experience/Pensamento.astro";
+import Evidencias from "../components/experience/Evidencias.astro";
+import Conexao from "../components/experience/Conexao.astro";
 ---
 
 <Base>
-  <Nav />
+  <a
+    href="#descoberta"
+    class="btn btn-accent sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50"
+  >
+    Pular a abertura
+  </a>
   <main>
-    <Hero />
-    <Work />
-    <About />
-    <Contact />
+    <Abertura />
+    <Descoberta />
+    <Pensamento />
+    <Evidencias />
+    <Conexao />
   </main>
-  <Footer />
 </Base>
