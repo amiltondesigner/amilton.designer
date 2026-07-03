@@ -5,16 +5,21 @@
  * (Perguntas → Hipóteses → Rabiscos → Descartes → Consequência), com
  * matéria-prima real dos 4 cases. Vermelho entra SÓ nos descartes.
  *
+ * Direção (Amilton, 2026-07-03): atos 02-04 são TIPOGRÁFICOS, sem
+ * cartões nem caixas; o fluxo do ato 03 é uma linha orgânica passando
+ * por palavras soltas; o ato 05 fecha com o mosaico das 4 capas
+ * (um processo, quatro consequências).
+ *
  * Layout duplo sem duplicar DOM: por padrão os atos empilham como blocos
  * editoriais (mobile, no-JS, reduced-motion = conteúdo completo e final);
  * no desktop com motion o GSAP re-posiciona os atos como camadas de um
  * palco pinado e coreografa a sequência. O revert() do contexto desfaz tudo.
- *
- * Os fluxos em SVG são representações estilizadas; serão trocados pelos
- * artefatos originais do Amilton quando ele exportar (dependência anotada).
  */
 import { Image } from "astro:assets";
-import telaFinal from "../../assets/projects/greensync/ui-version.png";
+import capaGreensync from "../../assets/projects/greensync/home-screens.png";
+import capaGeotrack from "../../assets/projects/geotrack/screens.png";
+import capaSerenity from "../../assets/projects/serenity/cover.png";
+import capaWoodgrill from "../../assets/projects/woodgrill/capa.png";
 
 const perguntas = [
   {
@@ -36,10 +41,10 @@ const perguntas = [
 ];
 
 const hipoteses = [
-  "Se o app responder em vez de reportar, o dado vira decisão.",
-  "Se cada processo tiver estado e dono, o mapa se explica sozinho.",
-  "Se o play estiver sempre a um toque, a meditação acontece.",
-  "Se a chama for o negativo do W, a marca nunca precisa gritar.",
+  "o app responder em vez de reportar, o dado vira decisão.",
+  "cada processo tiver estado e dono, o mapa se explica sozinho.",
+  "o play estiver sempre a um toque, a meditação acontece.",
+  "a chama for o negativo do W, a marca nunca precisa gritar.",
 ];
 
 const descartes = [
@@ -48,6 +53,13 @@ const descartes = [
   { texto: "Gráfico 3D de geração", sobrevive: false },
   { texto: "Fogo literal no símbolo", sobrevive: false },
   { texto: "Uma resposta por tela", sobrevive: true },
+];
+
+const consequencias = [
+  { img: capaGreensync, alt: "Telas do app GreenSync" },
+  { img: capaGeotrack, alt: "Plataforma GeoTrack" },
+  { img: capaSerenity, alt: "App de meditação Serenity" },
+  { img: capaWoodgrill, alt: "Identidade da Wood Grill" },
 ];
 
 const blocos = [
@@ -123,25 +135,28 @@ const blocos = [
       </div>
     </div>
 
-    <!-- Ato 2 — Hipóteses -->
+    <!-- Ato 2 — Hipóteses (só tipografia, o "Se" carrega a cor) -->
     <div class="cena" data-cena="hipoteses">
       <div class="wrap">
         <p class="kicker text-accent">Ato 02 · Viram hipóteses</p>
-        <div class="mt-10 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="mt-12 flex max-w-4xl flex-col gap-8 md:gap-10">
           {
-            hipoteses.map((h) => (
-              <div class="hipotese rounded-lg border border-border bg-surface p-6">
-                <p class="font-display text-xl font-medium leading-snug md:text-2xl">
-                  {h}
-                </p>
-              </div>
+            hipoteses.map((h, i) => (
+              <p
+                class:list={[
+                  "hipotese font-display text-2xl font-medium leading-[1.12] tracking-tight md:text-4xl",
+                  i % 2 === 1 && "md:ml-[12%]",
+                ]}
+              >
+                <span class="text-accent">Se</span> {h}
+              </p>
             ))
           }
         </div>
       </div>
     </div>
 
-    <!-- Ato 3 — Rabiscos e fluxos -->
+    <!-- Ato 3 — Rabiscos: uma linha orgânica passando por palavras soltas -->
     <div class="cena" data-cena="fluxo">
       <div class="wrap">
         <p class="kicker text-accent">Ato 03 · Rabiscos antes de telas</p>
@@ -151,108 +166,120 @@ const blocos = [
         </p>
         <svg
           class="fluxo-svg mt-10 w-full max-w-4xl"
-          viewBox="0 0 860 320"
+          viewBox="0 0 900 340"
           fill="none"
-          aria-label="Fluxo de decisão rabiscado: abrir o app leva ao resumo do dia; se algo pede atenção, mostra o alerta do painel; senão, a economia do mês"
+          aria-label="Rabisco de fluxo: abrir o app leva ao resumo do dia; se algo pede atenção, vai pro alerta do painel; senão, pra economia do mês"
           role="img"
         >
-          <g class="fluxo-no" data-fluxo-no>
-            <rect x="10" y="130" width="150" height="60" rx="14" class="no-caixa"></rect>
-            <text x="85" y="165" text-anchor="middle" class="no-texto">abre o app</text>
-          </g>
-          <path d="M160 160 C 205 160, 210 160, 250 160" class="no-seta" data-fluxo-path></path>
-          <g class="fluxo-no" data-fluxo-no>
-            <rect x="252" y="130" width="170" height="60" rx="14" class="no-caixa"></rect>
-            <text x="337" y="165" text-anchor="middle" class="no-texto">resumo do dia</text>
-          </g>
-          <path d="M422 160 C 465 160, 470 160, 508 160" class="no-seta" data-fluxo-path></path>
-          <g class="fluxo-no" data-fluxo-no>
-            <rect x="510" y="122" width="180" height="76" rx="38" class="no-caixa no-decisao"></rect>
-            <text x="600" y="153" text-anchor="middle" class="no-texto">algo pede</text>
-            <text x="600" y="175" text-anchor="middle" class="no-texto">atenção?</text>
-          </g>
-          <path d="M690 145 C 740 120, 745 95, 760 78" class="no-seta no-seta-sim" data-fluxo-path></path>
-          <text x="712" y="98" class="no-rotulo">sim</text>
-          <g class="fluxo-no" data-fluxo-no>
-            <rect x="700" y="20" width="150" height="56" rx="14" class="no-caixa no-alerta"></rect>
-            <text x="775" y="53" text-anchor="middle" class="no-texto">alerta do painel</text>
-          </g>
-          <path d="M690 178 C 740 205, 745 228, 760 244" class="no-seta" data-fluxo-path></path>
-          <text x="706" y="232" class="no-rotulo">não</text>
-          <g class="fluxo-no" data-fluxo-no>
-            <rect x="700" y="246" width="150" height="56" rx="14" class="no-caixa"></rect>
-            <text x="775" y="279" text-anchor="middle" class="no-texto">economia do mês</text>
-          </g>
           <path
-            d="M40 60 C 70 30, 120 26, 150 52 C 175 74, 140 96, 112 84 C 90 74, 96 48, 122 44"
+            d="M60 190 C 130 168, 180 158, 250 162"
+            class="fluxo-linha"
+            data-fluxo-path></path>
+          <path
+            d="M330 158 C 420 148, 470 168, 540 186"
+            class="fluxo-linha"
+            data-fluxo-path></path>
+          <path
+            d="M660 176 C 720 150, 760 110, 790 84"
+            class="fluxo-linha fluxo-linha-sim"
+            data-fluxo-path></path>
+          <path
+            d="M652 206 C 716 236, 756 262, 788 282"
+            class="fluxo-linha"
+            data-fluxo-path></path>
+          <path
+            d="M52 78 C 84 44, 136 40, 168 68 C 194 92, 156 116, 126 102 C 102 90, 110 62, 138 58"
             class="no-rabisco"
-            data-fluxo-path
-          ></path>
+            data-fluxo-path></path>
+
+          <g class="fluxo-no" data-fluxo-no>
+            <circle cx="56" cy="192" r="3.5" class="no-ponto"></circle>
+            <text x="56" y="222" text-anchor="start" class="no-texto">abre o app</text>
+          </g>
+          <g class="fluxo-no" data-fluxo-no>
+            <circle cx="290" cy="160" r="3.5" class="no-ponto"></circle>
+            <text x="290" y="136" text-anchor="middle" class="no-texto">resumo do dia</text>
+          </g>
+          <g class="fluxo-no" data-fluxo-no>
+            <circle cx="600" cy="196" r="3.5" class="no-ponto"></circle>
+            <text x="600" y="228" text-anchor="middle" class="no-texto no-decisao">algo pede atenção?</text>
+          </g>
+          <text x="716" y="126" class="no-rotulo">sim</text>
+          <g class="fluxo-no" data-fluxo-no>
+            <circle cx="796" cy="80" r="3.5" class="no-ponto"></circle>
+            <text x="788" y="58" text-anchor="end" class="no-texto">alerta do painel</text>
+          </g>
+          <text x="700" y="266" class="no-rotulo">não</text>
+          <g class="fluxo-no" data-fluxo-no>
+            <circle cx="794" cy="286" r="3.5" class="no-ponto"></circle>
+            <text x="786" y="312" text-anchor="end" class="no-texto">economia do mês</text>
+          </g>
         </svg>
       </div>
     </div>
 
-    <!-- Ato 4 — Testes e descartes (o vermelho entra aqui) -->
+    <!-- Ato 4 — Testes e descartes: linhas riscadas, sem caixas -->
     <div class="cena" data-cena="descartes">
       <div class="wrap">
-        <p class="kicker text-accent">Ato 04 · Testo. Descarto. Fico com pouco.</p>
-        <div class="mt-10 flex max-w-3xl flex-col gap-3">
+        <p class="kicker text-accent">
+          Ato 04 · Testo. Descarto. Fico com pouco.
+        </p>
+        <div class="mt-12 flex max-w-3xl flex-col gap-6 md:gap-8">
           {
             descartes.map((d) => (
-              <div
+              <p
                 class:list={[
-                  "descarte relative rounded-lg border p-5",
-                  d.sobrevive
-                    ? "descarte-sobrevive border-accent bg-surface"
-                    : "border-border",
+                  "descarte font-display text-2xl font-medium tracking-tight md:text-4xl",
+                  d.sobrevive ? "text-accent" : "text-muted",
                 ]}
                 data-sobrevive={d.sobrevive ? "true" : undefined}
               >
-                <p class="font-display text-lg font-medium md:text-xl">
+                <span class="descarte-texto relative inline-block">
                   {d.texto}
                   <span class="sr-only">
                     {d.sobrevive ? "(aprovado)" : "(descartado)"}
                   </span>
-                </p>
-                {!d.sobrevive && <span class="risco" aria-hidden="true" />}
+                  {!d.sobrevive && <span class="risco" aria-hidden="true" />}
+                </span>
                 {d.sobrevive && (
-                  <span class="eyebrow mt-2 block !text-accent">sobreviveu</span>
+                  <span class="eyebrow mt-3 block !text-accent">sobreviveu</span>
                 )}
-              </div>
+              </p>
             ))
           }
         </div>
       </div>
     </div>
 
-    <!-- Ato 5 — Consequência -->
+    <!-- Ato 5 — Consequência: um processo, quatro produtos -->
     <div class="cena" data-cena="consequencia">
       <div class="wrap">
         <p class="kicker text-accent">Ato 05 · Consequência</p>
         <div class="mt-10 grid grid-cols-1 items-center gap-10 md:grid-cols-12">
           <div class="md:col-span-7">
-            <div
-              class="consequencia-tela overflow-hidden rounded-xl border border-border bg-surface"
-            >
-              <Image
-                src={telaFinal}
-                alt="Telas finais do GreenSync, o que sobreviveu ao processo"
-                widths={[768, 1280]}
-                sizes="(max-width: 768px) 100vw, 55vw"
-                class="h-auto w-full"
-              />
+            <div class="consequencia-telas grid grid-cols-2 gap-3 md:gap-4">
+              {
+                consequencias.map((c) => (
+                  <div class="overflow-hidden rounded-lg bg-surface">
+                    <Image
+                      src={c.img}
+                      alt={c.alt}
+                      widths={[480, 768]}
+                      sizes="(max-width: 768px) 50vw, 30vw"
+                      class="aspect-[4/3] h-auto w-full object-cover"
+                    />
+                  </div>
+                ))
+              }
             </div>
           </div>
           <div class="md:col-span-5">
             <p class="display-2 consequencia-frase max-w-[12ch]">
               O que sobreviveu virou produto.
             </p>
-            <a
-              href="/trabalho/greensync"
-              class="link-line mt-6 inline-block text-sm text-muted transition-colors hover:text-foreground"
-            >
-              Ver a prova completa →
-            </a>
+            <p class="mt-6 max-w-sm text-muted">
+              Um processo só, quatro consequências. As provas vêm a seguir.
+            </p>
           </div>
         </div>
       </div>
@@ -297,34 +324,30 @@ const blocos = [
     margin-top: 6rem;
   }
 
-  .fluxo-svg .no-caixa {
-    stroke: var(--ch-fg);
-    stroke-width: 2;
-    fill: var(--surface);
-  }
-  .fluxo-svg .no-decisao {
-    stroke: var(--ch-accent);
-  }
-  .fluxo-svg .no-alerta {
-    stroke: var(--ch-accent);
-  }
   .fluxo-svg .no-texto {
     fill: var(--ch-fg);
     font-family: var(--font-sans);
-    font-size: 15px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .fluxo-svg .no-decisao {
+    fill: var(--ch-accent);
   }
   .fluxo-svg .no-rotulo {
     fill: var(--ch-muted);
     font-family: var(--font-sans);
     font-size: 13px;
   }
-  .fluxo-svg .no-seta {
+  .fluxo-svg .fluxo-linha {
     stroke: var(--ch-muted);
     stroke-width: 2;
     stroke-linecap: round;
   }
-  .fluxo-svg .no-seta-sim {
+  .fluxo-svg .fluxo-linha-sim {
     stroke: var(--ch-accent);
+  }
+  .fluxo-svg .no-ponto {
+    fill: var(--ch-accent);
   }
   .fluxo-svg .no-rabisco {
     stroke: color-mix(in oklab, var(--ch-accent) 55%, transparent);
@@ -332,19 +355,17 @@ const blocos = [
     stroke-linecap: round;
   }
 
-  /* Risco vermelho do descarte — visível por padrão; o palco anima scaleX */
+  /* Risco vermelho do descarte — sobre o texto, na largura do texto */
   .risco {
     position: absolute;
-    left: 1.25rem;
-    right: 1.25rem;
-    top: 50%;
-    height: 3px;
+    left: -0.1em;
+    right: -0.1em;
+    top: 0.58em;
+    height: 0.09em;
+    min-height: 3px;
     border-radius: 2px;
     background: var(--descarte);
     transform-origin: left center;
-  }
-  .descarte:not(.descarte-sobrevive) p {
-    color: var(--ch-muted);
   }
 </style>
 
@@ -354,10 +375,10 @@ const blocos = [
 
   // dispersão determinística das hipóteses antes de se organizarem
   const DISPERSAO = [
-    { x: -70, y: 46, r: -5 },
-    { x: 60, y: -38, r: 4 },
-    { x: -44, y: -52, r: 3 },
-    { x: 76, y: 40, r: -3 },
+    { x: -60, y: 42, r: -3.5 },
+    { x: 54, y: -34, r: 2.8 },
+    { x: -40, y: -46, r: 2.2 },
+    { x: 66, y: 36, r: -2.4 },
   ];
 
   registerScene(() => {
@@ -366,9 +387,7 @@ const blocos = [
     );
     if (!stage) return;
 
-    const cenas = Array.from(
-      stage.querySelectorAll<HTMLElement>(".cena"),
-    );
+    const cenas = Array.from(stage.querySelectorAll<HTMLElement>(".cena"));
     const cena = (nome: string) =>
       stage.querySelector<HTMLElement>(`[data-cena="${nome}"]`)!;
 
@@ -403,12 +422,12 @@ const blocos = [
       autoAlpha: 0,
     });
 
-    const cards = Array.from(
+    const frases = Array.from(
       cena("hipoteses").querySelectorAll<HTMLElement>(".hipotese"),
     );
-    cards.forEach((c, i) => {
+    frases.forEach((f, i) => {
       const d = DISPERSAO[i % DISPERSAO.length];
-      gsap.set(c, { x: d.x, y: d.y, rotation: d.r, autoAlpha: 0 });
+      gsap.set(f, { x: d.x, y: d.y, rotation: d.r, autoAlpha: 0 });
     });
 
     const nos = Array.from(
@@ -417,7 +436,7 @@ const blocos = [
     const tracos = Array.from(
       cena("fluxo").querySelectorAll<SVGPathElement>("[data-fluxo-path]"),
     );
-    gsap.set(nos, { autoAlpha: 0, y: 12 });
+    gsap.set(nos, { autoAlpha: 0, y: 10 });
     tracos.forEach((p) => {
       const len = p.getTotalLength();
       gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
@@ -435,13 +454,14 @@ const blocos = [
     gsap.set(descartesEls, { autoAlpha: 0, y: 24 });
     gsap.set(riscos, { scaleX: 0 });
 
-    const tela = cena("consequencia").querySelector<HTMLElement>(
-      ".consequencia-tela",
+    const telas = cena("consequencia").querySelector<HTMLElement>(
+      ".consequencia-telas",
     );
+    const tiles = telas ? Array.from(telas.children) : [];
     const frase = cena("consequencia").querySelector<HTMLElement>(
       ".consequencia-frase",
     );
-    gsap.set(tela, { autoAlpha: 0, y: 40, scale: 0.94 });
+    gsap.set(tiles, { autoAlpha: 0, y: 32, scale: 0.95 });
     gsap.set(frase, { autoAlpha: 0, y: 24 });
 
     /* ---- a sequência ---- */
@@ -478,13 +498,9 @@ const blocos = [
     const tHip = 0.3 + perguntasEls.length * 1.5 + 0.2;
     tl.to(cena("perguntas"), { autoAlpha: 0, duration: 0.35 }, tHip - 0.15);
     tl.to(cena("hipoteses"), { autoAlpha: 1, duration: 0.4 }, tHip)
+      .to(frases, { autoAlpha: 1, duration: 0.4, stagger: 0.12 }, tHip + 0.2)
       .to(
-        cards,
-        { autoAlpha: 1, duration: 0.4, stagger: 0.12 },
-        tHip + 0.2,
-      )
-      .to(
-        cards,
+        frases,
         {
           x: 0,
           y: 0,
@@ -497,14 +513,10 @@ const blocos = [
       )
       .to(cena("hipoteses"), { autoAlpha: 0, duration: 0.5 }, tHip + 2.6);
 
-    // Ato 3 — o fluxo se desenha
+    // Ato 3 — a linha se desenha pelas palavras
     const tFluxo = tHip + 3.1;
     tl.to(cena("fluxo"), { autoAlpha: 1, duration: 0.4 }, tFluxo);
-    tl.to(
-      nos,
-      { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.25 },
-      tFluxo + 0.2,
-    );
+    tl.to(nos, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.25 }, tFluxo + 0.2);
     tracos.forEach((p, i) => {
       tl.to(
         p,
@@ -516,19 +528,18 @@ const blocos = [
 
     // Ato 4 — testes e descartes (vermelho)
     const tDesc = tFluxo + 3.9;
-    tl.to(cena("descartes"), { autoAlpha: 1, duration: 0.4 }, tDesc)
-      .to(
-        descartesEls,
-        { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.15 },
-        tDesc + 0.2,
-      );
+    tl.to(cena("descartes"), { autoAlpha: 1, duration: 0.4 }, tDesc).to(
+      descartesEls,
+      { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.15 },
+      tDesc + 0.2,
+    );
     riscos.forEach((r, i) => {
       tl.to(r, { scaleX: 1, duration: 0.35 }, tDesc + 1.3 + i * 0.4);
     });
     if (sobrevivente) {
       tl.to(
         sobrevivente,
-        { scale: 1.03, duration: 0.4, ease: "power1.out" },
+        { x: 10, duration: 0.4, ease: "power1.out" },
         tDesc + 3.1,
       );
     }
@@ -537,8 +548,19 @@ const blocos = [
     // Ato 5 — consequência (fica em cena até o pin soltar)
     const tCons = tDesc + 4.3;
     tl.to(cena("consequencia"), { autoAlpha: 1, duration: 0.4 }, tCons)
-      .to(tela, { autoAlpha: 1, y: 0, scale: 1, duration: 0.9, ease: "power1.out" }, tCons + 0.2)
-      .to(frase, { autoAlpha: 1, y: 0, duration: 0.6 }, tCons + 0.7)
-      .to({}, { duration: 0.8 }, tCons + 1.3); // respiro final antes de soltar
+      .to(
+        tiles,
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.7,
+          stagger: 0.15,
+          ease: "power1.out",
+        },
+        tCons + 0.2,
+      )
+      .to(frase, { autoAlpha: 1, y: 0, duration: 0.6 }, tCons + 0.8)
+      .to({}, { duration: 0.8 }, tCons + 1.4); // respiro final antes de soltar
   });
 </script>

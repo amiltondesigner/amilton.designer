@@ -84,7 +84,8 @@ test.describe("mapa conceitual", () => {
     await page.click(".ponto-mapa");
     const mapa = page.locator(".mapa-overlay");
     await expect(mapa).toHaveAttribute("open", "");
-    await expect(mapa.locator(".mapa-no")).toHaveCount(7);
+    // 5 destinos distintos + 4 cases satélites
+    await expect(mapa.locator(".mapa-no")).toHaveCount(9);
 
     await mapa.getByRole("button", { name: /Manifesto/ }).click();
     await expect(mapa.locator(".manifesto-linha").first()).toBeVisible();
@@ -99,19 +100,35 @@ test.describe("mapa conceitual", () => {
     await page.goto("/", { waitUntil: "networkidle" });
     await page.waitForTimeout(1000);
     await page.click(".ponto-mapa");
-    await page.getByRole("button", { name: /^IA/ }).click();
+    await page.getByRole("button", { name: /Como eu penso/ }).click();
     await expect
       .poll(
         () =>
           page.evaluate(
             () =>
               Math.abs(
-                document.getElementById("ia")!.getBoundingClientRect().top,
+                document
+                  .getElementById("pensamento")!
+                  .getBoundingClientRect().top,
               ),
           ),
         { timeout: 8_000 },
       )
       .toBeLessThan(500);
+  });
+
+  test("case satélite do mapa abre direto no overlay", async ({ page }) => {
+    await page.goto("/", { waitUntil: "networkidle" });
+    await page.click(".ponto-mapa");
+    await page.locator('.mapa-caso[href="/trabalho/serenity"]').click();
+    const overlay = page.locator(".case-overlay");
+    await expect(overlay).toHaveAttribute("open", "");
+    await expect(page).toHaveURL(/\/trabalho\/serenity/);
+    await expect(overlay.locator("h1")).toContainText("Serenity");
+    await expect(page.locator(".mapa-overlay")).not.toHaveAttribute(
+      "open",
+      "",
+    );
   });
 });
 

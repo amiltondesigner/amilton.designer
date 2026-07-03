@@ -1,4 +1,5 @@
 ---
+import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import Abertura from "../components/experience/Abertura.astro";
 import Descoberta from "../components/experience/Descoberta.astro";
@@ -7,6 +8,10 @@ import Evidencias from "../components/experience/Evidencias.astro";
 import Conexao from "../components/experience/Conexao.astro";
 import CaseOverlay from "../components/experience/CaseOverlay.tsx";
 import ConceptMap from "../components/experience/ConceptMap.tsx";
+
+const casos = (await getCollection("projects"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((p) => ({ id: p.id, title: p.data.title }));
 ---
 
 <Base>
@@ -16,7 +21,7 @@ import ConceptMap from "../components/experience/ConceptMap.tsx";
   >
     Pular a abertura
   </a>
-  <ConceptMap client:idle />
+  <ConceptMap client:idle casos={casos} />
   <main>
     <Abertura />
     <Descoberta />

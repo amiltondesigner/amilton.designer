@@ -1,8 +1,10 @@
 /**
  * O ponto + mapa conceitual — a navegação da experiência (VISION.md):
  * sem navbar; um ponto fixo (na cor do capítulo atual) abre um mapa
- * fullscreen com os 7 nós. Manifesto é conteúdo exclusivo daqui,
- * recompensa de quem explora.
+ * fullscreen. Cada nó leva a um destino DISTINTO; os 4 cases orbitam
+ * "As provas" como satélites e abrem direto no overlay (são <a> reais,
+ * o CaseOverlay intercepta o clique quando o dialog fecha).
+ * Manifesto é conteúdo exclusivo daqui, recompensa de quem explora.
  *
  * Constelação com linhas no desktop; lista editorial no mobile
  * (a troca é só CSS, o DOM é o mesmo). <dialog> nativo: foco preso,
@@ -12,34 +14,29 @@ import { useRef, useState } from "preact/hooks";
 import { mapNodes } from "../../config/chapters";
 import { whatsappUrl } from "../../config/site";
 
+type Caso = { id: string; title: string };
+
 const POSICOES: Record<string, { x: number; y: number }> = {
-  processo: { x: 20, y: 24 },
-  pesquisa: { x: 46, y: 15 },
-  interface: { x: 71, y: 27 },
-  ia: { x: 30, y: 48 },
-  projetos: { x: 58, y: 53 },
-  manifesto: { x: 79, y: 73 },
-  contato: { x: 31, y: 79 },
+  quem: { x: 20, y: 22 },
+  pensamento: { x: 48, y: 32 },
+  provas: { x: 63, y: 58 },
+  manifesto: { x: 85, y: 80 },
+  conversar: { x: 25, y: 76 },
 };
 
-const DESCRICOES: Record<string, string> = {
-  processo: "como eu trabalho",
-  pesquisa: "o que decide as telas",
-  interface: "o craft",
-  ia: "meu par de projeto",
-  projetos: "as provas",
-  manifesto: "só existe aqui",
-  contato: "vamos conversar",
-};
+/** órbitas dos cases em volta de "As provas" */
+const SATELITES = [
+  { x: 47, y: 47 },
+  { x: 81, y: 44 },
+  { x: 44, y: 70 },
+  { x: 80, y: 66 },
+];
 
 const LIGACOES: Array<[string, string]> = [
-  ["processo", "pesquisa"],
-  ["pesquisa", "interface"],
-  ["processo", "ia"],
-  ["ia", "projetos"],
-  ["interface", "projetos"],
-  ["projetos", "contato"],
-  ["projetos", "manifesto"],
+  ["quem", "pensamento"],
+  ["pensamento", "provas"],
+  ["provas", "conversar"],
+  ["provas", "manifesto"],
 ];
 
 const MANIFESTO = [
@@ -60,7 +57,7 @@ function lenis():
   ).__lenis;
 }
 
-export default function ConceptMap() {
+export default function ConceptMap({ casos = [] }: { casos?: Caso[] }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [vista, setVista] = useState<"mapa" | "manifesto">("mapa");
 
@@ -70,7 +67,11 @@ export default function ConceptMap() {
   }
 
   function aoFechar() {
-    lenis()?.start();
+    // o evento close é assíncrono: se um satélite abriu o overlay de case
+    // nesse meio-tempo, o Lenis precisa CONTINUAR parado
+    if (!document.querySelector("dialog.case-overlay[open]")) {
+      lenis()?.start();
+    }
     setVista("mapa");
   }
 
@@ -153,6 +154,16 @@ export default function ConceptMap() {
                   y2={POSICOES[b].y}
                 />
               ))}
+              {casos.map((c, i) => (
+                <line
+                  key={c.id}
+                  class="linha-satelite"
+                  x1={POSICOES.provas.x}
+                  y1={POSICOES.provas.y}
+                  x2={SATELITES[i % SATELITES.length].x}
+                  y2={SATELITES[i % SATELITES.length].y}
+                />
+              ))}
             </svg>
             <div class="mapa-nos">
               {mapNodes.map((no, i) => (
@@ -168,8 +179,19 @@ export default function ConceptMap() {
                   }
                 >
                   <span class="mapa-no-rotulo">{no.label}</span>
-                  <span class="mapa-no-desc">{DESCRICOES[no.id]}</span>
+                  <span class="mapa-no-desc">{no.desc}</span>
                 </button>
+              ))}
+              {casos.map((c, i) => (
+                <a
+                  key={c.id}
+                  class="mapa-no mapa-caso"
+                  href={`/trabalho/${c.id}`}
+                  style={`--i:${mapNodes.length + i}; --x:${SATELITES[i % SATELITES.length].x}%; --y:${SATELITES[i % SATELITES.length].y}%`}
+                  onClick={() => dialogRef.current?.close()}
+                >
+                  <span class="mapa-no-rotulo">{c.title}</span>
+                </a>
               ))}
             </div>
             <p class="mapa-dica" aria-hidden="true">

@@ -111,15 +111,40 @@ export const chapters: Chapter[] = [
 
 /**
  * Nós do mapa conceitual (navegação sem menu — ver VISION.md).
- * `href` aponta pra âncoras/rotas; refinado na Fase 6.
+ * Regra (Amilton, 2026-07-03): cada nó leva a um destino DISTINTO;
+ * os quatro princípios do Pensamento viraram um nó só e os cases
+ * entram como satélites (abrem direto no overlay).
  * Manifesto é conteúdo exclusivo do mapa (recompensa de exploração).
  */
 export const mapNodes = [
-  { id: "processo", label: "Processo", href: "#processo", chapter: "pensamento" },
-  { id: "pesquisa", label: "Pesquisa", href: "#pesquisa", chapter: "pensamento" },
-  { id: "interface", label: "Interface", href: "#interface", chapter: "pensamento" },
-  { id: "ia", label: "IA", href: "#ia", chapter: "pensamento" },
-  { id: "projetos", label: "Projetos", href: "#evidencias", chapter: "evidencias" },
-  { id: "manifesto", label: "Manifesto", href: "#manifesto", chapter: "abertura" },
-  { id: "contato", label: "Contato", href: "#conexao", chapter: "conexao" },
+  {
+    id: "quem",
+    label: "Quem pensa",
+    href: "#descoberta",
+    desc: "o designer por trás",
+  },
+  {
+    id: "pensamento",
+    label: "Como eu penso",
+    href: "#pensamento",
+    desc: "processo, pesquisa, interface, IA",
+  },
+  {
+    id: "provas",
+    label: "As provas",
+    href: "#evidencias",
+    desc: "quatro projetos",
+  },
+  {
+    id: "manifesto",
+    label: "Manifesto",
+    href: "#manifesto",
+    desc: "só existe aqui",
+  },
+  {
+    id: "conversar",
+    label: "Conversar",
+    href: "#conexao",
+    desc: "direto no WhatsApp",
+  },
 ] as const;
