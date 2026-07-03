@@ -1,10 +1,55 @@
 ---
 /**
- * Capítulo 03 — Pensamento. O diferencial da experiência: como o Amilton
- * resolve problemas. Nesta fase é o esqueleto editorial com âncoras do mapa
- * (#processo #pesquisa #interface #ia); as cenas scrubadas entram na Fase 4.
- * Laranja; o vermelho fica reservado aos descartes.
+ * Capítulo 03 — Pensamento. O diferencial da experiência (VISION.md):
+ * o visitante acompanha o pensamento acontecendo em 5 atos scrubados
+ * (Perguntas → Hipóteses → Rabiscos → Descartes → Consequência), com
+ * matéria-prima real dos 4 cases. Vermelho entra SÓ nos descartes.
+ *
+ * Layout duplo sem duplicar DOM: por padrão os atos empilham como blocos
+ * editoriais (mobile, no-JS, reduced-motion = conteúdo completo e final);
+ * no desktop com motion o GSAP re-posiciona os atos como camadas de um
+ * palco pinado e coreografa a sequência. O revert() do contexto desfaz tudo.
+ *
+ * Os fluxos em SVG são representações estilizadas; serão trocados pelos
+ * artefatos originais do Amilton quando ele exportar (dependência anotada).
  */
+import { Image } from "astro:assets";
+import telaFinal from "../../assets/projects/greensync/ui-version.png";
+
+const perguntas = [
+  {
+    texto: "Vale a pena? E o que eu faço com isso?",
+    origem: "GreenSync · energia solar",
+  },
+  {
+    texto: "Como domar dado demais sem esconder o que importa?",
+    origem: "GeoTrack · govtech",
+  },
+  {
+    texto: "Quantos toques existem entre querer meditar e o play?",
+    origem: "Serenity · bem-estar",
+  },
+  {
+    texto: "O que sobra de um grill quando você tira o clichê do fogo?",
+    origem: "Wood Grill · marca",
+  },
+];
+
+const hipoteses = [
+  "Se o app responder em vez de reportar, o dado vira decisão.",
+  "Se cada processo tiver estado e dono, o mapa se explica sozinho.",
+  "Se o play estiver sempre a um toque, a meditação acontece.",
+  "Se a chama for o negativo do W, a marca nunca precisa gritar.",
+];
+
+const descartes = [
+  { texto: "Dashboard com todos os números de uma vez", sobrevive: false },
+  { texto: "Onboarding em sete passos", sobrevive: false },
+  { texto: "Gráfico 3D de geração", sobrevive: false },
+  { texto: "Fogo literal no símbolo", sobrevive: false },
+  { texto: "Uma resposta por tela", sobrevive: true },
+];
+
 const blocos = [
   {
     id: "processo",
@@ -59,22 +104,181 @@ const blocos = [
     </p>
   </div>
 
-  <div class="wrap mt-20 grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2">
-    {
-      blocos.map((b) => (
-        <article id={b.id} class="scroll-mt-32 max-w-xl" data-anima>
-          <div class="flex items-baseline gap-4">
-            <span class="font-display text-sm font-medium tabular-nums text-faint">
-              {b.numero}
-            </span>
-            <h3 class="font-display text-2xl font-semibold tracking-tight md:text-3xl">
-              {b.titulo}
-            </h3>
+  <!-- O palco: 5 atos. Empilhados por padrão; camadas pinadas no desktop. -->
+  <div class="mt-20 md:mt-28" data-pensamento-stage>
+    <!-- Ato 1 — Perguntas -->
+    <div class="cena" data-cena="perguntas">
+      <div class="wrap">
+        <p class="kicker text-accent">Ato 01 · Tudo começa com perguntas</p>
+        <div class="perguntas-lista mt-10 space-y-14 md:space-y-16">
+          {
+            perguntas.map((q) => (
+              <div class="pergunta">
+                <p class="display-2 max-w-[20ch]">{q.texto}</p>
+                <p class="eyebrow mt-4">{q.origem}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Ato 2 — Hipóteses -->
+    <div class="cena" data-cena="hipoteses">
+      <div class="wrap">
+        <p class="kicker text-accent">Ato 02 · Viram hipóteses</p>
+        <div class="mt-10 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2">
+          {
+            hipoteses.map((h) => (
+              <div class="hipotese rounded-lg border border-border bg-surface p-6">
+                <p class="font-display text-xl font-medium leading-snug md:text-2xl">
+                  {h}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Ato 3 — Rabiscos e fluxos -->
+    <div class="cena" data-cena="fluxo">
+      <div class="wrap">
+        <p class="kicker text-accent">Ato 03 · Rabiscos antes de telas</p>
+        <p class="mt-4 max-w-lg text-muted">
+          Primeiro o fluxo decide onde a tela começa e onde ela para de
+          atrapalhar.
+        </p>
+        <svg
+          class="fluxo-svg mt-10 w-full max-w-4xl"
+          viewBox="0 0 860 320"
+          fill="none"
+          aria-label="Fluxo de decisão rabiscado: abrir o app leva ao resumo do dia; se algo pede atenção, mostra o alerta do painel; senão, a economia do mês"
+          role="img"
+        >
+          <g class="fluxo-no" data-fluxo-no>
+            <rect x="10" y="130" width="150" height="60" rx="14" class="no-caixa"></rect>
+            <text x="85" y="165" text-anchor="middle" class="no-texto">abre o app</text>
+          </g>
+          <path d="M160 160 C 205 160, 210 160, 250 160" class="no-seta" data-fluxo-path></path>
+          <g class="fluxo-no" data-fluxo-no>
+            <rect x="252" y="130" width="170" height="60" rx="14" class="no-caixa"></rect>
+            <text x="337" y="165" text-anchor="middle" class="no-texto">resumo do dia</text>
+          </g>
+          <path d="M422 160 C 465 160, 470 160, 508 160" class="no-seta" data-fluxo-path></path>
+          <g class="fluxo-no" data-fluxo-no>
+            <rect x="510" y="122" width="180" height="76" rx="38" class="no-caixa no-decisao"></rect>
+            <text x="600" y="153" text-anchor="middle" class="no-texto">algo pede</text>
+            <text x="600" y="175" text-anchor="middle" class="no-texto">atenção?</text>
+          </g>
+          <path d="M690 145 C 740 120, 745 95, 760 78" class="no-seta no-seta-sim" data-fluxo-path></path>
+          <text x="712" y="98" class="no-rotulo">sim</text>
+          <g class="fluxo-no" data-fluxo-no>
+            <rect x="700" y="20" width="150" height="56" rx="14" class="no-caixa no-alerta"></rect>
+            <text x="775" y="53" text-anchor="middle" class="no-texto">alerta do painel</text>
+          </g>
+          <path d="M690 178 C 740 205, 745 228, 760 244" class="no-seta" data-fluxo-path></path>
+          <text x="706" y="232" class="no-rotulo">não</text>
+          <g class="fluxo-no" data-fluxo-no>
+            <rect x="700" y="246" width="150" height="56" rx="14" class="no-caixa"></rect>
+            <text x="775" y="279" text-anchor="middle" class="no-texto">economia do mês</text>
+          </g>
+          <path
+            d="M40 60 C 70 30, 120 26, 150 52 C 175 74, 140 96, 112 84 C 90 74, 96 48, 122 44"
+            class="no-rabisco"
+            data-fluxo-path
+          ></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Ato 4 — Testes e descartes (o vermelho entra aqui) -->
+    <div class="cena" data-cena="descartes">
+      <div class="wrap">
+        <p class="kicker text-accent">Ato 04 · Testo. Descarto. Fico com pouco.</p>
+        <div class="mt-10 flex max-w-3xl flex-col gap-3">
+          {
+            descartes.map((d) => (
+              <div
+                class:list={[
+                  "descarte relative rounded-lg border p-5",
+                  d.sobrevive
+                    ? "descarte-sobrevive border-accent bg-surface"
+                    : "border-border",
+                ]}
+                data-sobrevive={d.sobrevive ? "true" : undefined}
+              >
+                <p class="font-display text-lg font-medium md:text-xl">
+                  {d.texto}
+                  <span class="sr-only">
+                    {d.sobrevive ? "(aprovado)" : "(descartado)"}
+                  </span>
+                </p>
+                {!d.sobrevive && <span class="risco" aria-hidden="true" />}
+                {d.sobrevive && (
+                  <span class="eyebrow mt-2 block !text-accent">sobreviveu</span>
+                )}
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Ato 5 — Consequência -->
+    <div class="cena" data-cena="consequencia">
+      <div class="wrap">
+        <p class="kicker text-accent">Ato 05 · Consequência</p>
+        <div class="mt-10 grid grid-cols-1 items-center gap-10 md:grid-cols-12">
+          <div class="md:col-span-7">
+            <div
+              class="consequencia-tela overflow-hidden rounded-xl border border-border bg-surface"
+            >
+              <Image
+                src={telaFinal}
+                alt="Telas finais do GreenSync, o que sobreviveu ao processo"
+                widths={[768, 1280]}
+                sizes="(max-width: 768px) 100vw, 55vw"
+                class="h-auto w-full"
+              />
+            </div>
           </div>
-          <p class="mt-4 leading-relaxed text-muted">{b.texto}</p>
-        </article>
-      ))
-    }
+          <div class="md:col-span-5">
+            <p class="display-2 consequencia-frase max-w-[12ch]">
+              O que sobreviveu virou produto.
+            </p>
+            <a
+              href="/trabalho/greensync"
+              class="link-line mt-6 inline-block text-sm text-muted transition-colors hover:text-foreground"
+            >
+              Ver a prova completa →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Os princípios por trás (âncoras do mapa conceitual) -->
+  <div class="wrap mt-24 md:mt-36">
+    <p class="kicker text-accent" data-anima="fade">Os princípios por trás</p>
+    <div class="mt-10 grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2">
+      {
+        blocos.map((b) => (
+          <article id={b.id} class="scroll-mt-32 max-w-xl" data-anima>
+            <div class="flex items-baseline gap-4">
+              <span class="font-display text-sm font-medium tabular-nums text-faint">
+                {b.numero}
+              </span>
+              <h3 class="font-display text-2xl font-semibold tracking-tight md:text-3xl">
+                {b.titulo}
+              </h3>
+            </div>
+            <p class="mt-4 leading-relaxed text-muted">{b.texto}</p>
+          </article>
+        ))
+      }
+    </div>
   </div>
 
   <div class="impact mt-24 py-20 md:py-28">
@@ -85,3 +289,256 @@ const blocos = [
     </div>
   </div>
 </section>
+
+<style>
+  /* Empilhado por padrão (mobile / no-JS / reduced-motion): tudo visível,
+     tudo no estado final. O modo palco é aplicado só via GSAP. */
+  .cena + .cena {
+    margin-top: 6rem;
+  }
+
+  .fluxo-svg .no-caixa {
+    stroke: var(--color-foreground);
+    stroke-width: 2;
+    fill: var(--color-surface);
+  }
+  .fluxo-svg .no-decisao {
+    stroke: var(--color-accent);
+  }
+  .fluxo-svg .no-alerta {
+    stroke: var(--color-accent);
+  }
+  .fluxo-svg .no-texto {
+    fill: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 15px;
+  }
+  .fluxo-svg .no-rotulo {
+    fill: var(--color-muted);
+    font-family: var(--font-sans);
+    font-size: 13px;
+  }
+  .fluxo-svg .no-seta {
+    stroke: var(--color-muted);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .fluxo-svg .no-seta-sim {
+    stroke: var(--color-accent);
+  }
+  .fluxo-svg .no-rabisco {
+    stroke: color-mix(in oklab, var(--color-accent) 55%, transparent);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  /* Risco vermelho do descarte — visível por padrão; o palco anima scaleX */
+  .risco {
+    position: absolute;
+    left: 1.25rem;
+    right: 1.25rem;
+    top: 50%;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-descarte);
+    transform-origin: left center;
+  }
+  .descarte:not(.descarte-sobrevive) p {
+    color: var(--color-muted);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { registerScene } from "../../scripts/experience";
+
+  // dispersão determinística das hipóteses antes de se organizarem
+  const DISPERSAO = [
+    { x: -70, y: 46, r: -5 },
+    { x: 60, y: -38, r: 4 },
+    { x: -44, y: -52, r: 3 },
+    { x: 76, y: 40, r: -3 },
+  ];
+
+  registerScene(() => {
+    const stage = document.querySelector<HTMLElement>(
+      "[data-pensamento-stage]",
+    );
+    if (!stage) return;
+
+    const cenas = Array.from(
+      stage.querySelectorAll<HTMLElement>(".cena"),
+    );
+    const cena = (nome: string) =>
+      stage.querySelector<HTMLElement>(`[data-cena="${nome}"]`)!;
+
+    /* ---- modo palco: atos viram camadas centradas ---- */
+    gsap.set(stage, { position: "relative", height: "100svh" });
+    gsap.set(cenas, {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      margin: 0,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      autoAlpha: 0,
+    });
+
+    const perguntasEls = Array.from(
+      cena("perguntas").querySelectorAll<HTMLElement>(".pergunta"),
+    );
+    const lista = cena("perguntas").querySelector<HTMLElement>(
+      ".perguntas-lista",
+    )!;
+    gsap.set(lista, { position: "relative", height: "56svh", margin: 0 });
+    gsap.set(perguntasEls, {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      top: "50%",
+      yPercent: -50,
+      autoAlpha: 0,
+    });
+
+    const cards = Array.from(
+      cena("hipoteses").querySelectorAll<HTMLElement>(".hipotese"),
+    );
+    cards.forEach((c, i) => {
+      const d = DISPERSAO[i % DISPERSAO.length];
+      gsap.set(c, { x: d.x, y: d.y, rotation: d.r, autoAlpha: 0 });
+    });
+
+    const nos = Array.from(
+      cena("fluxo").querySelectorAll<HTMLElement>("[data-fluxo-no]"),
+    );
+    const tracos = Array.from(
+      cena("fluxo").querySelectorAll<SVGPathElement>("[data-fluxo-path]"),
+    );
+    gsap.set(nos, { autoAlpha: 0, y: 12 });
+    tracos.forEach((p) => {
+      const len = p.getTotalLength();
+      gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+    });
+
+    const descartesEls = Array.from(
+      cena("descartes").querySelectorAll<HTMLElement>(".descarte"),
+    );
+    const riscos = Array.from(
+      cena("descartes").querySelectorAll<HTMLElement>(".risco"),
+    );
+    const sobrevivente = cena("descartes").querySelector<HTMLElement>(
+      "[data-sobrevive]",
+    );
+    gsap.set(descartesEls, { autoAlpha: 0, y: 24 });
+    gsap.set(riscos, { scaleX: 0 });
+
+    const tela = cena("consequencia").querySelector<HTMLElement>(
+      ".consequencia-tela",
+    );
+    const frase = cena("consequencia").querySelector<HTMLElement>(
+      ".consequencia-frase",
+    );
+    gsap.set(tela, { autoAlpha: 0, y: 40, scale: 0.94 });
+    gsap.set(frase, { autoAlpha: 0, y: 24 });
+
+    /* ---- a sequência ---- */
+    const tl = gsap.timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        trigger: stage,
+        start: "top top",
+        end: "+=420%",
+        scrub: true,
+        pin: true,
+        anticipatePin: 1,
+      },
+    });
+
+    // Ato 1 — perguntas em sequência
+    tl.to(cena("perguntas"), { autoAlpha: 1, duration: 0.3 }, 0);
+    perguntasEls.forEach((q, i) => {
+      const inicio = 0.3 + i * 1.5;
+      tl.fromTo(
+        q,
+        { autoAlpha: 0, y: 70 },
+        { autoAlpha: 1, y: 0, duration: 0.7, ease: "power1.out" },
+        inicio,
+      );
+      tl.to(
+        q,
+        { autoAlpha: 0, y: -70, duration: 0.7, ease: "power1.in" },
+        inicio + 1.1,
+      );
+    });
+
+    // Ato 2 — hipóteses se organizam
+    const tHip = 0.3 + perguntasEls.length * 1.5 + 0.2;
+    tl.to(cena("perguntas"), { autoAlpha: 0, duration: 0.35 }, tHip - 0.15);
+    tl.to(cena("hipoteses"), { autoAlpha: 1, duration: 0.4 }, tHip)
+      .to(
+        cards,
+        { autoAlpha: 1, duration: 0.4, stagger: 0.12 },
+        tHip + 0.2,
+      )
+      .to(
+        cards,
+        {
+          x: 0,
+          y: 0,
+          rotation: 0,
+          duration: 1.1,
+          stagger: 0.08,
+          ease: "power2.inOut",
+        },
+        tHip + 0.9,
+      )
+      .to(cena("hipoteses"), { autoAlpha: 0, duration: 0.5 }, tHip + 2.6);
+
+    // Ato 3 — o fluxo se desenha
+    const tFluxo = tHip + 3.1;
+    tl.to(cena("fluxo"), { autoAlpha: 1, duration: 0.4 }, tFluxo);
+    tl.to(
+      nos,
+      { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.25 },
+      tFluxo + 0.2,
+    );
+    tracos.forEach((p, i) => {
+      tl.to(
+        p,
+        { strokeDashoffset: 0, duration: 0.6, ease: "power1.inOut" },
+        tFluxo + 0.5 + i * 0.4,
+      );
+    });
+    tl.to(cena("fluxo"), { autoAlpha: 0, duration: 0.5 }, tFluxo + 3.4);
+
+    // Ato 4 — testes e descartes (vermelho)
+    const tDesc = tFluxo + 3.9;
+    tl.to(cena("descartes"), { autoAlpha: 1, duration: 0.4 }, tDesc)
+      .to(
+        descartesEls,
+        { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.15 },
+        tDesc + 0.2,
+      );
+    riscos.forEach((r, i) => {
+      tl.to(r, { scaleX: 1, duration: 0.35 }, tDesc + 1.3 + i * 0.4);
+    });
+    if (sobrevivente) {
+      tl.to(
+        sobrevivente,
+        { scale: 1.03, duration: 0.4, ease: "power1.out" },
+        tDesc + 3.1,
+      );
+    }
+    tl.to(cena("descartes"), { autoAlpha: 0, duration: 0.5 }, tDesc + 3.8);
+
+    // Ato 5 — consequência (fica em cena até o pin soltar)
+    const tCons = tDesc + 4.3;
+    tl.to(cena("consequencia"), { autoAlpha: 1, duration: 0.4 }, tCons)
+      .to(tela, { autoAlpha: 1, y: 0, scale: 1, duration: 0.9, ease: "power1.out" }, tCons + 0.2)
+      .to(frase, { autoAlpha: 1, y: 0, duration: 0.6 }, tCons + 0.7)
+      .to({}, { duration: 0.8 }, tCons + 1.3); // respiro final antes de soltar
+  });
+</script>
