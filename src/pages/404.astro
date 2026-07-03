@@ -1,0 +1,51 @@
+---
+import Base from "../layouts/Base.astro";
+import Footer from "../components/Footer.astro";
+import SymbolMark from "../components/SymbolMark.astro";
+import WhatsApp from "../components/icons/WhatsApp.astro";
+import { whatsappUrl } from "../config/site";
+
+const waHref = whatsappUrl(
+  "Oi, Amilton! Vim pelo seu site e quero conversar sobre um projeto.",
+);
+---
+
+<Base title="Página não encontrada · Amilton Schlemper">
+  <header class="wrap flex items-center justify-between py-5">
+    <a
+      href="/"
+      class="inline-flex items-center gap-2.5 text-sm font-medium tracking-tight"
+    >
+      <SymbolMark class="size-5 shrink-0" />
+      <span class="link-line">Amilton Schlemper</span>
+    </a>
+    <a
+      href={waHref}
+      target="_blank"
+      rel="noopener"
+      class="btn btn-ghost px-4! py-2! text-sm"
+    >
+      <WhatsApp class="size-4" /> WhatsApp
+    </a>
+  </header>
+
+  <main
+    class="wrap flex min-h-[80vh] flex-col items-center justify-center py-32 text-center"
+  >
+    <p class="eyebrow">Erro 404</p>
+    <h1
+      class="mt-6 max-w-3xl text-balance font-display font-bold leading-[0.95] tracking-tight text-[clamp(2.5rem,8vw,5.5rem)]"
+    >
+      Essa página não existe (ou mudou de lugar).
+    </h1>
+    <p class="mt-6 max-w-md text-lg leading-relaxed text-muted">
+      O link pode estar quebrado. O resto do trabalho continua a um clique daqui.
+    </p>
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+      <a href="/" class="btn btn-accent">Voltar ao início</a>
+      <a href="/#trabalho" class="btn btn-ghost">Ver trabalho</a>
+    </div>
+  </main>
+
+  <Footer />
+</Base>
