@@ -3,7 +3,7 @@
  */
 export const site = {
   name: "Amilton Schlemper",
-  role: "UI/UX Designer Sênior",
+  role: "Designer de Produtos Digitais",
   tagline: "Crio produtos digitais fáceis de usar e difíceis de esquecer.",
   bio: "Sou Amilton, designer há mais de 15 anos. Meu trabalho é fazer o complexo caber numa tela simples, sem perder o que importa.",
   yearsOfExperience: 15,

@@ -1,20 +1,24 @@
 ---
 /**
  * Capítulo 01 — Abertura. Impacto e silêncio: a frase-conceito nasce
- * palavra por palavra, e na saída (cena pinada, só desktop) se desmonta
- * deixando um instante de vazio antes da Descoberta. Ver docs/VISION.md.
+ * palavra por palavra e, na saída (cena pinada, só desktop), o símbolo
+ * A+S explode em direção à câmera enquanto a tela apaga — o visitante
+ * atravessa a marca e cai no capítulo escuro da Descoberta.
  *
  * As palavras são divididas no build (spans mascarados); sem JS o texto
- * fica 100% visível e estático.
+ * fica 100% visível e estático, e a camada escura nunca aparece (o tema
+ * escuro do capítulo 02 continua vindo do IntersectionObserver).
  *
  * Regra anti-conflito das cenas: a ENTRADA anima só os elementos internos
- * (.palavra-inner, .item-inner, svg da marca) e a SAÍDA pinada anima só os
- * contêineres (.palavra, [data-abertura-item], .hero-mark). Assim os dois
- * timelines nunca disputam a mesma propriedade do mesmo alvo.
+ * (.palavra-inner, .item-inner) e a SAÍDA pinada anima os contêineres
+ * (.palavra, [data-abertura-item]). Exceção consciente: o svg da marca
+ * aparece na entrada (opacity, 1.6s a partir do load) e explode na saída
+ * (scale/opacity via scrub); o scrub escreve por último a cada tick, então
+ * quem rolar durante a entrada só encurta o fade.
  */
 import HeroMark from "../HeroMark.astro";
 
-const TITULO = "Um portfólio que não apresenta projetos.";
+const TITULO = "Antes das telas, o pensamento.";
 const palavras = TITULO.split(" ");
 ---
 
@@ -23,15 +27,17 @@ const palavras = TITULO.split(" ");
   data-chapter-section="abertura"
   class="relative flex min-h-svh flex-col justify-center overflow-hidden"
 >
+  <!-- a luz apaga junto da explosão; cor = --ch-bg da Descoberta -->
+  <div class="abertura-escuro" data-abertura-escuro aria-hidden="true"></div>
   <HeroMark />
 
   <div class="wrap relative z-10">
     <p class="eyebrow" data-abertura-item>
       <span class="item-inner inline-block"
-        >Amilton Schlemper · UI/UX Designer Sênior</span
+        >Amilton Schlemper · Designer de produtos digitais</span
       >
     </p>
-    <h1 class="display-1 mt-8 max-w-[14ch]" data-abertura-titulo>
+    <h1 class="display-1 mt-8 max-w-[16ch]" data-abertura-titulo>
       {
         palavras.map((p) => (
           <>
@@ -46,7 +52,7 @@ const palavras = TITULO.split(" ");
       data-abertura-item
     >
       <span class="item-inner inline-block"
-        >Ele convida você pra dentro da forma como eu penso.</span
+        >Te mostro como eu penso um produto, antes de desenhar a primeira tela.</span
       >
     </p>
   </div>
@@ -75,6 +81,15 @@ const palavras = TITULO.split(" ");
 </section>
 
 <style>
+  .abertura-escuro {
+    position: absolute;
+    inset: 0;
+    z-index: 0; /* HeroMark vem depois no DOM: a marca explode SOBRE o escuro */
+    background: #0f1522; /* espelha body[data-chapter="descoberta"] */
+    opacity: 0;
+    pointer-events: none;
+  }
+
   /* máscara por palavra — padding compensa descendentes (j, p, q) */
   .palavra {
     display: inline-block;
@@ -129,8 +144,12 @@ const palavras = TITULO.split(" ");
     const itens = section.querySelectorAll<HTMLElement>(
       "[data-abertura-item]",
     );
-    const marcaSvg = section.querySelector<HTMLElement>(".hero-mark__svg");
     const marca = section.querySelector<HTMLElement>(".hero-mark");
+    const marcaSvg = section.querySelector<HTMLElement>(".hero-mark__svg");
+    const marcaPath = section.querySelector<SVGPathElement>(".am-mark");
+    const escuro = section.querySelector<HTMLElement>(
+      "[data-abertura-escuro]",
+    );
 
     // Entrada — silêncio, e a frase nasce de baixo, palavra a palavra
     const entrada = gsap.timeline({ defaults: { ease: "expo.out" } });
@@ -141,30 +160,78 @@ const palavras = TITULO.split(" ");
         { opacity: 0, y: 14, duration: 0.7, stagger: 0.12 },
         "-=0.55",
       );
-    if (marcaSvg) {
+    // entrada some pelo CONTÊINER; a saída explode o SVG interno. Assim a
+    // entrada e o scrub de saída não disputam a mesma opacity (era isso que
+    // deixava a marca invisível ao voltar pro topo).
+    if (marca) {
       entrada.from(
-        marcaSvg,
+        marca,
         { opacity: 0, duration: 1.6, ease: "power1.out" },
         0.4,
       );
     }
 
-    // Saída pinada — a frase se desmonta e sobra um instante de vazio
+    // Saída pinada — a frase se desmonta, o símbolo explode e a luz apaga
     const saida = gsap.timeline({
       scrollTrigger: {
         trigger: section,
         start: "top top",
-        end: "+=70%",
+        end: "+=110%",
         scrub: true,
         pin: true,
         anticipatePin: 1,
+        // o capítulo escuro chega JUNTO da explosão; depois do pin o
+        // IntersectionObserver do tema assume normalmente
+        onUpdate(self) {
+          const alvo = self.progress > 0.5 ? "descoberta" : "abertura";
+          if (document.body.dataset.chapter !== alvo) {
+            document.body.dataset.chapter = alvo;
+          }
+        },
       },
       defaults: { ease: "none" },
     });
     saida
-      .to(palavras, { yPercent: -140, opacity: 0, stagger: 0.03 }, 0)
+      .to(palavras, { yPercent: -140, opacity: 0, stagger: 0.02, duration: 0.4 }, 0)
       // itens somem rápido, antes das palavras cruzarem por cima (crítica)
-      .to(itens, { opacity: 0, y: -24, duration: 0.22 }, 0);
-    if (marca) saida.to(marca, { opacity: 0.25, yPercent: -6 }, 0);
+      .to(itens, { opacity: 0, y: -24, duration: 0.18 }, 0);
+    if (marcaSvg) {
+      saida
+        // a marca cresce em direção à câmera: o visitante passa POR ela.
+        // fromTo + immediateRender:false fixa o estado inicial (scale 1,
+        // opacity 1) pro scrub REVERTER certo ao voltar pro topo — senão a
+        // opacidade ficava presa em 0 (a entrada anima a mesma opacity, e o
+        // .to gravava 0 como valor inicial).
+        .fromTo(
+          marcaSvg,
+          { scale: 1 },
+          {
+            scale: 9.5,
+            transformOrigin: "46% 52%",
+            ease: "power2.in",
+            duration: 0.75,
+            immediateRender: false,
+          },
+          0.18,
+        )
+        .fromTo(
+          marcaSvg,
+          { opacity: 1 },
+          { opacity: 0, duration: 0.22, immediateRender: false },
+          0.82,
+        );
+    }
+    if (marcaPath) {
+      // o traço clareia enquanto o fundo escurece (independe do tema do body)
+      saida.to(
+        marcaPath,
+        { fill: "rgba(250, 250, 247, 0.3)", duration: 0.28 },
+        0.36,
+      );
+    }
+    if (escuro) {
+      saida.to(escuro, { opacity: 1, ease: "power1.in", duration: 0.45 }, 0.32);
+    }
+    saida.to({}, { duration: 0.12 }, 0.92); // respiro no escuro antes de soltar
   });
 </script>
