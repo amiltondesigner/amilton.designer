@@ -9,15 +9,22 @@ import { Image } from "astro:assets";
 import avatar from "../../assets/avatar.png";
 import { site, services } from "../../config/site";
 import Socials from "../Socials.astro";
+import MarkFragment from "../MarkFragment.astro";
 ---
 
 <section
   id="descoberta"
   data-chapter-section="descoberta"
-  class="wrap scroll-mt-24 py-28 md:py-44"
+  class="wrap scroll-mt-24 py-28 md:py-44 relative isolate"
 >
+  <!-- eco da marca: um pedaço do A+S que sobrou da explosão do hero -->
+  <MarkFragment
+    class="hidden md:block top-[6%] -right-44 w-[560px] lg:w-[680px]"
+    intensidade={16}
+    rotacao={-6}
+  />
   <p class="kicker text-accent" data-anima="fade">
-    Capítulo 02 · Quem pensa assim
+    Quem pensa assim
   </p>
 
   <h2 class="display-1 mt-6" data-descoberta-nome>

@@ -181,21 +181,15 @@ test.describe("fallbacks lineares", () => {
 test.describe("mobile linear", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test("sem pins, atos do Pensamento empilhados e visíveis", async ({
+  test("sem pins no mobile; Pensamento presente e estático", async ({
     page,
   }) => {
     await page.goto("/", { waitUntil: "networkidle" });
     expect(
       await page.evaluate(() => document.querySelectorAll(".pin-spacer").length),
     ).toBe(0);
-    expect(
-      await page.evaluate(
-        () =>
-          [...document.querySelectorAll(".cena")].filter(
-            (c) => getComputedStyle(c).position === "static",
-          ).length,
-      ),
-    ).toBe(5);
+    // O capítulo Pensamento virou editorial (sem palco nem atos pinados)
+    await expect(page.locator("#pensamento")).toBeAttached();
   });
 });
 

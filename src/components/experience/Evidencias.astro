@@ -6,6 +6,7 @@
  */
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
+import MarkFragment from "../MarkFragment.astro";
 
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
@@ -15,9 +16,15 @@ const projects = (await getCollection("projects")).sort(
 <section
   id="evidencias"
   data-chapter-section="evidencias"
-  class="wrap scroll-mt-24 py-28 md:py-44"
+  class="wrap scroll-mt-24 py-28 md:py-44 relative isolate"
 >
-  <p class="kicker text-accent" data-anima="fade">Capítulo 04 · As provas</p>
+  <!-- eco da marca: um pedaço do A+S, agora em verde -->
+  <MarkFragment
+    class="hidden md:block bottom-[8%] -right-44 w-[520px] lg:w-[640px]"
+    intensidade={11}
+    rotacao={-8}
+  />
+  <p class="kicker text-accent" data-anima="fade">As provas</p>
   <div class="mt-6 flex flex-wrap items-end justify-between gap-6">
     <h2 class="display-2 max-w-[16ch]" data-anima>
       Projetos não abrem esta história. Comprovam.

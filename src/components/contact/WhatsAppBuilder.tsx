@@ -108,7 +108,7 @@ export default function WhatsAppBuilder() {
     count > 0 || Boolean(state.name) || Boolean(state.note) || dirty;
 
   return (
-    <div ref={rootRef} class="mt-12 max-w-2xl">
+    <div ref={rootRef} class="mt-12 max-w-2xl lg:max-w-5xl">
       {/* O mesmo botão abre e fecha; as escolhas sobrevivem ao recolher */}
       <div class="flex flex-wrap items-center gap-x-6 gap-y-4">
         <button
@@ -133,13 +133,18 @@ export default function WhatsAppBuilder() {
       </div>
 
       {expandido && (
-        // pb-28 no mobile: o CTA fixo não pode cobrir os últimos campos
-        <div id="construtor-whatsapp" class="mt-10 pb-28 lg:pb-0">
+        // pb-28 no mobile: o CTA fixo não pode cobrir os últimos campos.
+        // No desktop vira duas colunas: construtor à esquerda, mensagem
+        // à direita (sticky), sempre à vista enquanto escolhe.
+        <div
+          id="construtor-whatsapp"
+          class="mt-10 pb-28 lg:grid lg:grid-cols-12 lg:items-start lg:gap-12 lg:pb-0"
+        >
           {/* Grupos de opções */}
           <div
             ref={construtorRef}
             tabIndex={-1}
-            class="space-y-10 outline-none"
+            class="space-y-10 outline-none lg:col-span-7"
             aria-label="Montar mensagem"
           >
         {inquiryGroups.map((g, gi) => {
@@ -210,8 +215,8 @@ export default function WhatsAppBuilder() {
         </div>
       </div>
 
-      {/* Por fim, a mensagem que vai pro WhatsApp */}
-      <aside ref={summaryRef} class="mt-12">
+      {/* A mensagem que vai pro WhatsApp — coluna direita no desktop */}
+      <aside ref={summaryRef} class="mt-12 lg:sticky lg:top-24 lg:col-span-5 lg:mt-0">
         <div class="rounded-xl border border-border bg-surface p-6">
           <div class="flex items-center justify-between gap-3">
             <span class="eyebrow">Sua mensagem</span>

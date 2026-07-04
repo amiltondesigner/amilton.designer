@@ -7,6 +7,7 @@
 import WhatsAppBuilder from "../contact/WhatsAppBuilder.tsx";
 import Socials from "../Socials.astro";
 import SymbolMark from "../SymbolMark.astro";
+import MarkFragment from "../MarkFragment.astro";
 import { site } from "../../config/site";
 
 const year = new Date().getFullYear();
@@ -15,9 +16,15 @@ const year = new Date().getFullYear();
 <section
   id="conexao"
   data-chapter-section="conexao"
-  class="wrap scroll-mt-24 pt-28 md:pt-44"
+  class="wrap scroll-mt-24 pt-28 md:pt-44 relative isolate"
 >
-  <p class="kicker text-accent" data-anima="fade">Capítulo 05 · Conexão</p>
+  <!-- eco da marca: o último pedaço do A+S, em violeta -->
+  <MarkFragment
+    class="hidden md:block top-[10%] -left-40 w-[560px] lg:w-[660px]"
+    intensidade={11}
+    rotacao={10}
+  />
+  <p class="kicker text-accent" data-anima="fade">Conexão</p>
   <div class="mt-6 max-w-3xl">
     <h2 class="display-2" data-anima>Chegou até aqui. Vamos conversar?</h2>
     <p

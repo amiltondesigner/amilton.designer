@@ -59,13 +59,14 @@ export const chapters: Chapter[] = [
     id: "descoberta",
     numero: "02",
     label: "Descoberta",
-    papel: "Quem é o Amilton, descoberto aos poucos. Entra o azul.",
+    papel:
+      "Quem é o Amilton. A abertura explode e apaga a luz: capítulo escuro, azul na sombra.",
     palette: {
-      background: "#EEF3FB",
-      foreground: "#131A26",
-      muted: "#475569",
-      accent: "#2B5CE0",
-      deep: "#16308C",
+      background: "#0F1522",
+      foreground: "#F2F5FB",
+      muted: "#A7B4CB",
+      accent: "#8FB3FF",
+      deep: "#101B36",
     },
   },
   {

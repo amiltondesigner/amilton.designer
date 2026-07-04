@@ -1,66 +1,12 @@
 ---
 /**
- * Capítulo 03 — Pensamento. O diferencial da experiência (VISION.md):
- * o visitante acompanha o pensamento acontecendo em 5 atos scrubados
- * (Perguntas → Hipóteses → Rabiscos → Descartes → Consequência), com
- * matéria-prima real dos 4 cases. Vermelho entra SÓ nos descartes.
- *
- * Direção (Amilton, 2026-07-03): atos 02-04 são TIPOGRÁFICOS, sem
- * cartões nem caixas; o fluxo do ato 03 é uma linha orgânica passando
- * por palavras soltas; o ato 05 fecha com o mosaico das 4 capas
- * (um processo, quatro consequências).
- *
- * Layout duplo sem duplicar DOM: por padrão os atos empilham como blocos
- * editoriais (mobile, no-JS, reduced-motion = conteúdo completo e final);
- * no desktop com motion o GSAP re-posiciona os atos como camadas de um
- * palco pinado e coreografa a sequência. O revert() do contexto desfaz tudo.
+ * Capítulo 03 — Pensamento. Como o designer pensa, em registro editorial
+ * calmo: a tese, os princípios por trás e um fecho que faz a ponte pras
+ * provas. Os atos scrubados (perguntas/hipóteses/camadas) foram removidos
+ * (Amilton, 2026-07-04); o método agora se conta em prosa e princípios,
+ * sem palco pinado. Reveals genéricos ficam por conta do experience.ts.
  */
-import { Image } from "astro:assets";
-import capaGreensync from "../../assets/projects/greensync/home-screens.png";
-import capaGeotrack from "../../assets/projects/geotrack/screens.png";
-import capaSerenity from "../../assets/projects/serenity/cover.png";
-import capaWoodgrill from "../../assets/projects/woodgrill/capa.png";
-
-const perguntas = [
-  {
-    texto: "Vale a pena? E o que eu faço com isso?",
-    origem: "app · energia solar",
-  },
-  {
-    texto: "Como domar dado demais sem esconder o que importa?",
-    origem: "plataforma · govtech",
-  },
-  {
-    texto: "Quantos toques existem entre querer meditar e o play?",
-    origem: "app · bem-estar",
-  },
-  {
-    texto: "O que sobra de um grill quando você tira o clichê do fogo?",
-    origem: "Wood Grill · marca",
-  },
-];
-
-const hipoteses = [
-  "o app responder em vez de reportar, o dado vira decisão.",
-  "cada processo tiver estado e dono, o mapa se explica sozinho.",
-  "o play estiver sempre a um toque, a meditação acontece.",
-  "a chama for o negativo do W, a marca nunca precisa gritar.",
-];
-
-const descartes = [
-  { texto: "Dashboard com todos os números de uma vez", sobrevive: false },
-  { texto: "Onboarding em sete passos", sobrevive: false },
-  { texto: "Gráfico 3D de geração", sobrevive: false },
-  { texto: "Fogo literal no símbolo", sobrevive: false },
-  { texto: "Uma resposta por tela", sobrevive: true },
-];
-
-const consequencias = [
-  { img: capaGreensync, alt: "Telas do app de energia solar" },
-  { img: capaGeotrack, alt: "Plataforma de regularização fundiária" },
-  { img: capaSerenity, alt: "App de meditação" },
-  { img: capaWoodgrill, alt: "Identidade da Wood Grill" },
-];
+import MarkFragment from "../MarkFragment.astro";
 
 const blocos = [
   {
@@ -97,193 +43,30 @@ const blocos = [
 <section
   id="pensamento"
   data-chapter-section="pensamento"
-  class="scroll-mt-24 py-28 md:py-44"
+  class="scroll-mt-24 py-28 md:py-44 relative isolate"
 >
+  <!-- eco da marca: um pedaço do A+S, em laranja -->
+  <MarkFragment
+    class="hidden md:block top-40 -left-48 w-[600px] lg:w-[720px]"
+    intensidade={10}
+    rotacao={12}
+  />
+
   <div class="wrap">
     <p class="kicker text-accent" data-anima="fade">
-      Capítulo 03 · Como eu penso
+      Como eu penso
     </p>
     <h2 class="display-2 mt-6 max-w-[16ch]" data-anima>
-      Nenhuma tela minha nasce na tela.
+      Boa interface começa como pergunta.
     </h2>
     <p
       class="mt-6 max-w-xl text-lg leading-relaxed text-muted"
       data-anima
       data-anima-delay="0.1"
     >
-      Ela nasce de perguntas, hipóteses, rabiscos, testes e uma pilha de
+      Ela nasce de dúvidas, hipóteses, rabiscos, testes e uma pilha de
       descartes. O que você vê no final é só a parte que sobreviveu.
     </p>
-  </div>
-
-  <!-- O palco: 5 atos. Empilhados por padrão; camadas pinadas no desktop. -->
-  <div class="mt-20 md:mt-28" data-pensamento-stage>
-    <!-- Ato 1 — Perguntas -->
-    <div class="cena" data-cena="perguntas">
-      <div class="wrap">
-        <p class="kicker text-accent">Ato 01 · Tudo começa com perguntas</p>
-        <div class="perguntas-lista mt-10 space-y-14 md:space-y-16">
-          {
-            perguntas.map((q) => (
-              <div class="pergunta">
-                <p class="display-2 max-w-[20ch]">{q.texto}</p>
-                <p class="eyebrow mt-4">{q.origem}</p>
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    </div>
-
-    <!-- Ato 2 — Hipóteses (só tipografia, o "Se" carrega a cor) -->
-    <div class="cena" data-cena="hipoteses">
-      <div class="wrap">
-        <p class="kicker text-accent">Ato 02 · Viram hipóteses</p>
-        <div class="mt-12 flex max-w-4xl flex-col gap-8 md:gap-10">
-          {
-            hipoteses.map((h, i) => (
-              <p
-                class:list={[
-                  "hipotese font-display text-2xl font-medium leading-[1.12] tracking-tight md:text-4xl",
-                  i % 2 === 1 && "md:ml-[12%]",
-                ]}
-              >
-                <span class="text-accent">Se</span> {h}
-              </p>
-            ))
-          }
-        </div>
-      </div>
-    </div>
-
-    <!-- Ato 3 — Rabiscos: uma linha orgânica passando por palavras soltas -->
-    <div class="cena" data-cena="fluxo">
-      <div class="wrap">
-        <p class="kicker text-accent">Ato 03 · Rabiscos antes de telas</p>
-        <p class="mt-4 max-w-lg text-muted">
-          Primeiro o fluxo decide onde a tela começa e onde ela para de
-          atrapalhar.
-        </p>
-        <svg
-          class="fluxo-svg mt-10 w-full max-w-4xl"
-          viewBox="0 0 900 340"
-          fill="none"
-          aria-label="Rabisco de fluxo: abrir o app leva ao resumo do dia; se algo pede atenção, vai pro alerta do painel; senão, pra economia do mês"
-          role="img"
-        >
-          <path
-            d="M60 190 C 130 168, 180 158, 250 162"
-            class="fluxo-linha"
-            data-fluxo-path></path>
-          <path
-            d="M330 158 C 420 148, 470 168, 540 186"
-            class="fluxo-linha"
-            data-fluxo-path></path>
-          <path
-            d="M660 176 C 720 150, 760 110, 790 84"
-            class="fluxo-linha fluxo-linha-sim"
-            data-fluxo-path></path>
-          <path
-            d="M652 206 C 716 236, 756 262, 788 282"
-            class="fluxo-linha"
-            data-fluxo-path></path>
-          <path
-            d="M52 78 C 84 44, 136 40, 168 68 C 194 92, 156 116, 126 102 C 102 90, 110 62, 138 58"
-            class="no-rabisco"
-            data-fluxo-path></path>
-
-          <g class="fluxo-no" data-fluxo-no>
-            <circle cx="56" cy="192" r="3.5" class="no-ponto"></circle>
-            <text x="56" y="222" text-anchor="start" class="no-texto">abre o app</text>
-          </g>
-          <g class="fluxo-no" data-fluxo-no>
-            <circle cx="290" cy="160" r="3.5" class="no-ponto"></circle>
-            <text x="290" y="136" text-anchor="middle" class="no-texto">resumo do dia</text>
-          </g>
-          <g class="fluxo-no" data-fluxo-no>
-            <circle cx="600" cy="196" r="3.5" class="no-ponto"></circle>
-            <text x="600" y="228" text-anchor="middle" class="no-texto no-decisao">algo pede atenção?</text>
-          </g>
-          <text x="716" y="126" class="no-rotulo">sim</text>
-          <g class="fluxo-no" data-fluxo-no>
-            <circle cx="796" cy="80" r="3.5" class="no-ponto"></circle>
-            <text x="788" y="58" text-anchor="end" class="no-texto">alerta do painel</text>
-          </g>
-          <text x="700" y="266" class="no-rotulo">não</text>
-          <g class="fluxo-no" data-fluxo-no>
-            <circle cx="794" cy="286" r="3.5" class="no-ponto"></circle>
-            <text x="786" y="312" text-anchor="end" class="no-texto">economia do mês</text>
-          </g>
-        </svg>
-      </div>
-    </div>
-
-    <!-- Ato 4 — Testes e descartes: linhas riscadas, sem caixas -->
-    <div class="cena" data-cena="descartes">
-      <div class="wrap">
-        <p class="kicker text-accent">
-          Ato 04 · Testo. Descarto. Fico com pouco.
-        </p>
-        <div class="mt-12 flex max-w-3xl flex-col gap-6 md:gap-8">
-          {
-            descartes.map((d) => (
-              <p
-                class:list={[
-                  "descarte font-display text-2xl font-medium tracking-tight md:text-4xl",
-                  d.sobrevive ? "text-accent" : "text-muted",
-                ]}
-                data-sobrevive={d.sobrevive ? "true" : undefined}
-              >
-                <span class="descarte-texto relative inline-block">
-                  {d.texto}
-                  <span class="sr-only">
-                    {d.sobrevive ? "(aprovado)" : "(descartado)"}
-                  </span>
-                  {!d.sobrevive && <span class="risco" aria-hidden="true" />}
-                </span>
-                {d.sobrevive && (
-                  <span class="eyebrow mt-3 block !text-accent">sobreviveu</span>
-                )}
-              </p>
-            ))
-          }
-        </div>
-      </div>
-    </div>
-
-    <!-- Ato 5 — Consequência: um processo, quatro produtos -->
-    <div class="cena" data-cena="consequencia">
-      <div class="wrap">
-        <p class="kicker text-accent">Ato 05 · Consequência</p>
-        <div class="mt-10 grid grid-cols-1 items-center gap-10 md:grid-cols-12">
-          <div class="md:col-span-7">
-            <div class="consequencia-telas grid grid-cols-2 gap-3 md:gap-4">
-              {
-                consequencias.map((c) => (
-                  <div class="overflow-hidden rounded-lg bg-surface">
-                    <Image
-                      src={c.img}
-                      alt={c.alt}
-                      widths={[480, 768]}
-                      sizes="(max-width: 768px) 50vw, 30vw"
-                      class="aspect-[4/3] h-auto w-full object-cover"
-                    />
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-          <div class="md:col-span-5">
-            <p class="display-2 consequencia-frase max-w-[12ch]">
-              O que sobreviveu virou produto.
-            </p>
-            <p class="mt-6 max-w-sm text-muted">
-              Um processo só, quatro consequências. As provas vêm a seguir.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Os princípios por trás (âncoras do mapa conceitual) -->
@@ -308,287 +91,21 @@ const blocos = [
     </div>
   </div>
 
-  <div class="impact mt-24 py-20 md:py-28">
-    <div class="wrap">
-      <p class="display-2 max-w-[18ch]" data-anima>
-        O projeto final é consequência. Nunca ponto de partida.
-      </p>
-    </div>
+  <!-- Fecho: o método vira produto, e faz a ponte pras provas -->
+  <div class="wrap mt-24 md:mt-36">
+    <p class="kicker text-accent" data-anima="fade">
+      Testo. Descarto. Fico com pouco.
+    </p>
+    <p class="display-2 mt-6 max-w-[18ch]" data-anima>
+      O que sobreviveu virou produto.
+    </p>
+    <p
+      class="mt-6 max-w-xl text-muted"
+      data-anima="fade"
+      data-anima-delay="0.1"
+    >
+      O projeto final é consequência, nunca ponto de partida. As provas vêm a
+      seguir.
+    </p>
   </div>
 </section>
-
-<style>
-  /* Empilhado por padrão (mobile / no-JS / reduced-motion): tudo visível,
-     tudo no estado final. O modo palco é aplicado só via GSAP. */
-  .cena + .cena {
-    margin-top: 6rem;
-  }
-
-  .fluxo-svg .no-texto {
-    fill: var(--ch-fg);
-    font-family: var(--font-sans);
-    font-size: 16px;
-    font-weight: 500;
-  }
-  .fluxo-svg .no-decisao {
-    fill: var(--ch-accent);
-  }
-  .fluxo-svg .no-rotulo {
-    fill: var(--ch-muted);
-    font-family: var(--font-sans);
-    font-size: 13px;
-  }
-  .fluxo-svg .fluxo-linha {
-    stroke: var(--ch-muted);
-    stroke-width: 2;
-    stroke-linecap: round;
-  }
-  .fluxo-svg .fluxo-linha-sim {
-    stroke: var(--ch-accent);
-  }
-  .fluxo-svg .no-ponto {
-    fill: var(--ch-accent);
-  }
-  .fluxo-svg .no-rabisco {
-    stroke: color-mix(in oklab, var(--ch-accent) 55%, transparent);
-    stroke-width: 2;
-    stroke-linecap: round;
-  }
-
-  /* Risco vermelho do descarte — sobre o texto, na largura do texto */
-  .risco {
-    position: absolute;
-    left: -0.1em;
-    right: -0.1em;
-    top: 0.58em;
-    height: 0.09em;
-    min-height: 3px;
-    border-radius: 2px;
-    background: var(--descarte);
-    transform-origin: left center;
-  }
-
-  /* Mobile: texto quebra em 2+ linhas e o traço só cortaria a primeira;
-     o line-through nativo risca linha a linha. E os rótulos do rabisco
-     sobem de corpo pra continuarem legíveis no viewBox escalado. */
-  @media (max-width: 767px) {
-    .risco {
-      display: none;
-    }
-    .descarte:not([data-sobrevive]) .descarte-texto {
-      text-decoration: line-through;
-      text-decoration-color: var(--descarte);
-      text-decoration-thickness: 3px;
-    }
-    .fluxo-svg .no-texto {
-      font-size: 34px;
-    }
-    .fluxo-svg .no-rotulo {
-      font-size: 26px;
-    }
-  }
-</style>
-
-<script>
-  import { gsap } from "gsap";
-  import { registerScene } from "../../scripts/experience";
-
-  // dispersão determinística das hipóteses antes de se organizarem;
-  // deslocamento vertical pequeno de propósito: os blocos de texto não
-  // podem colidir entre si no estado disperso (achado da crítica)
-  const DISPERSAO = [
-    { x: -110, y: 14, r: -3.5 },
-    { x: 88, y: -12, r: 2.8 },
-    { x: -76, y: -16, r: 2.2 },
-    { x: 120, y: 12, r: -2.4 },
-  ];
-
-  registerScene(() => {
-    const stage = document.querySelector<HTMLElement>(
-      "[data-pensamento-stage]",
-    );
-    if (!stage) return;
-
-    const cenas = Array.from(stage.querySelectorAll<HTMLElement>(".cena"));
-    const cena = (nome: string) =>
-      stage.querySelector<HTMLElement>(`[data-cena="${nome}"]`)!;
-
-    /* ---- modo palco: atos viram camadas centradas ----
-       opacity (NUNCA opacity/visibility): os atos precisam continuar na
-       árvore de acessibilidade; leitores de tela leem o capítulo inteiro
-       mesmo com o palco coreografado. Nada aqui é interativo, então
-       pointer-events: none resolve a sobreposição de camadas. */
-    gsap.set(stage, { position: "relative", height: "100svh" });
-    gsap.set(cenas, {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      margin: 0,
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      opacity: 0,
-      pointerEvents: "none",
-    });
-
-    const perguntasEls = Array.from(
-      cena("perguntas").querySelectorAll<HTMLElement>(".pergunta"),
-    );
-    const lista = cena("perguntas").querySelector<HTMLElement>(
-      ".perguntas-lista",
-    )!;
-    gsap.set(lista, { position: "relative", height: "56svh", margin: 0 });
-    gsap.set(perguntasEls, {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      top: "50%",
-      yPercent: -50,
-      opacity: 0,
-    });
-
-    const frases = Array.from(
-      cena("hipoteses").querySelectorAll<HTMLElement>(".hipotese"),
-    );
-    frases.forEach((f, i) => {
-      const d = DISPERSAO[i % DISPERSAO.length];
-      gsap.set(f, { x: d.x, y: d.y, rotation: d.r, opacity: 0 });
-    });
-
-    const nos = Array.from(
-      cena("fluxo").querySelectorAll<HTMLElement>("[data-fluxo-no]"),
-    );
-    const tracos = Array.from(
-      cena("fluxo").querySelectorAll<SVGPathElement>("[data-fluxo-path]"),
-    );
-    gsap.set(nos, { opacity: 0, y: 10 });
-    tracos.forEach((p) => {
-      const len = p.getTotalLength();
-      gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
-    });
-
-    const descartesEls = Array.from(
-      cena("descartes").querySelectorAll<HTMLElement>(".descarte"),
-    );
-    const riscos = Array.from(
-      cena("descartes").querySelectorAll<HTMLElement>(".risco"),
-    );
-    const sobrevivente = cena("descartes").querySelector<HTMLElement>(
-      "[data-sobrevive]",
-    );
-    gsap.set(descartesEls, { opacity: 0, y: 24 });
-    gsap.set(riscos, { scaleX: 0 });
-
-    const telas = cena("consequencia").querySelector<HTMLElement>(
-      ".consequencia-telas",
-    );
-    const tiles = telas ? Array.from(telas.children) : [];
-    const frase = cena("consequencia").querySelector<HTMLElement>(
-      ".consequencia-frase",
-    );
-    gsap.set(tiles, { opacity: 0, y: 32, scale: 0.95 });
-    gsap.set(frase, { opacity: 0, y: 24 });
-
-    /* ---- a sequência ---- */
-    const tl = gsap.timeline({
-      defaults: { ease: "none" },
-      scrollTrigger: {
-        trigger: stage,
-        start: "top top",
-        end: "+=460%",
-        scrub: true,
-        pin: true,
-        anticipatePin: 1,
-      },
-    });
-
-    // Ato 1 — perguntas em sequência (1.9 de espaçamento: a que sai
-    // termina ANTES da próxima entrar; nada de dupla exposição)
-    tl.to(cena("perguntas"), { opacity: 1, duration: 0.3 }, 0);
-    perguntasEls.forEach((q, i) => {
-      const inicio = 0.3 + i * 1.9;
-      tl.fromTo(
-        q,
-        { opacity: 0, y: 70 },
-        { opacity: 1, y: 0, duration: 0.7, ease: "power1.out" },
-        inicio,
-      );
-      tl.to(
-        q,
-        { opacity: 0, y: -70, duration: 0.7, ease: "power1.in" },
-        inicio + 1.1,
-      );
-    });
-
-    // Ato 2 — hipóteses se organizam
-    const tHip = 0.3 + perguntasEls.length * 1.9 + 0.2;
-    tl.to(cena("perguntas"), { opacity: 0, duration: 0.35 }, tHip - 0.15);
-    tl.to(cena("hipoteses"), { opacity: 1, duration: 0.4 }, tHip)
-      .to(frases, { opacity: 1, duration: 0.4, stagger: 0.12 }, tHip + 0.2)
-      .to(
-        frases,
-        {
-          x: 0,
-          y: 0,
-          rotation: 0,
-          duration: 1.1,
-          stagger: 0.08,
-          ease: "power2.inOut",
-        },
-        tHip + 0.9,
-      )
-      .to(cena("hipoteses"), { opacity: 0, duration: 0.5 }, tHip + 2.6);
-
-    // Ato 3 — a linha se desenha pelas palavras
-    const tFluxo = tHip + 3.1;
-    tl.to(cena("fluxo"), { opacity: 1, duration: 0.4 }, tFluxo);
-    tl.to(nos, { opacity: 1, y: 0, duration: 0.5, stagger: 0.25 }, tFluxo + 0.2);
-    tracos.forEach((p, i) => {
-      tl.to(
-        p,
-        { strokeDashoffset: 0, duration: 0.6, ease: "power1.inOut" },
-        tFluxo + 0.5 + i * 0.4,
-      );
-    });
-    tl.to(cena("fluxo"), { opacity: 0, duration: 0.5 }, tFluxo + 3.4);
-
-    // Ato 4 — testes e descartes (vermelho)
-    const tDesc = tFluxo + 3.9;
-    tl.to(cena("descartes"), { opacity: 1, duration: 0.4 }, tDesc).to(
-      descartesEls,
-      { opacity: 1, y: 0, duration: 0.5, stagger: 0.15 },
-      tDesc + 0.2,
-    );
-    riscos.forEach((r, i) => {
-      tl.to(r, { scaleX: 1, duration: 0.35 }, tDesc + 1.3 + i * 0.4);
-    });
-    if (sobrevivente) {
-      tl.to(
-        sobrevivente,
-        { x: 10, duration: 0.4, ease: "power1.out" },
-        tDesc + 3.1,
-      );
-    }
-    tl.to(cena("descartes"), { opacity: 0, duration: 0.5 }, tDesc + 3.8);
-
-    // Ato 5 — consequência (fica em cena até o pin soltar)
-    const tCons = tDesc + 4.3;
-    tl.to(cena("consequencia"), { opacity: 1, duration: 0.4 }, tCons)
-      .to(
-        tiles,
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.7,
-          stagger: 0.15,
-          ease: "power1.out",
-        },
-        tCons + 0.2,
-      )
-      .to(frase, { opacity: 1, y: 0, duration: 0.6 }, tCons + 0.8)
-      .to({}, { duration: 0.8 }, tCons + 1.4); // respiro final antes de soltar
-  });
-</script>
