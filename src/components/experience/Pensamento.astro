@@ -1,0 +1,111 @@
+---
+/**
+ * Capítulo 03 — Pensamento. Como o designer pensa, em registro editorial
+ * calmo: a tese, os princípios por trás e um fecho que faz a ponte pras
+ * provas. Os atos scrubados (perguntas/hipóteses/camadas) foram removidos
+ * (Amilton, 2026-07-04); o método agora se conta em prosa e princípios,
+ * sem palco pinado. Reveals genéricos ficam por conta do experience.ts.
+ */
+import MarkFragment from "../MarkFragment.astro";
+
+const blocos = [
+  {
+    id: "processo",
+    numero: "01",
+    titulo: "Processo",
+    texto:
+      "Começo pelo problema, não pela estética. Entendo o negócio, converso com quem usa, levanto hipóteses e só então abro o Figma. A tela é a última etapa do desenho, não a primeira.",
+  },
+  {
+    id: "pesquisa",
+    numero: "02",
+    titulo: "Pesquisa",
+    texto:
+      "Persona não é enfeite de slide. É o que decide o que aparece primeiro, o que fica a um toque e o que vira alerta. Quando a pesquisa é boa, a interface para de ser opinião.",
+  },
+  {
+    id: "interface",
+    numero: "03",
+    titulo: "Interface",
+    texto:
+      "Interface boa é a que some. Hierarquia clara, ritmo, espaço pra respirar e cor com propósito. O usuário não deve notar o design, deve terminar o que veio fazer.",
+  },
+  {
+    id: "ia",
+    numero: "04",
+    titulo: "IA",
+    texto:
+      "Uso IA como par de projeto: acelera a exploração, multiplica variações e me devolve tempo pro que máquina não faz. Entender gente e decidir o que importa.",
+  },
+];
+---
+
+<section
+  id="pensamento"
+  data-chapter-section="pensamento"
+  class="scroll-mt-24 py-28 md:py-44 relative isolate"
+>
+  <!-- eco da marca: um pedaço do A+S, em laranja -->
+  <MarkFragment
+    class="hidden md:block top-40 -left-48 w-[600px] lg:w-[720px]"
+    intensidade={10}
+    rotacao={12}
+  />
+
+  <div class="wrap">
+    <p class="kicker text-accent" data-anima="fade">
+      Como eu penso
+    </p>
+    <h2 class="display-2 mt-6 max-w-[16ch]" data-anima>
+      Boa interface começa como pergunta.
+    </h2>
+    <p
+      class="mt-6 max-w-xl text-lg leading-relaxed text-muted"
+      data-anima
+      data-anima-delay="0.1"
+    >
+      Ela nasce de dúvidas, hipóteses, rabiscos, testes e uma pilha de
+      descartes. O que você vê no final é só a parte que sobreviveu.
+    </p>
+  </div>
+
+  <!-- Os princípios por trás (âncoras do mapa conceitual) -->
+  <div class="wrap mt-24 md:mt-36">
+    <p class="kicker text-accent" data-anima="fade">Os princípios por trás</p>
+    <div class="mt-10 grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2">
+      {
+        blocos.map((b) => (
+          <article id={b.id} class="scroll-mt-32 max-w-xl" data-anima>
+            <div class="flex items-baseline gap-4">
+              <span class="font-display text-sm font-medium tabular-nums text-faint">
+                {b.numero}
+              </span>
+              <h3 class="font-display text-2xl font-semibold tracking-tight md:text-3xl">
+                {b.titulo}
+              </h3>
+            </div>
+            <p class="mt-4 leading-relaxed text-muted">{b.texto}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- Fecho: o método vira produto, e faz a ponte pras provas -->
+  <div class="wrap mt-24 md:mt-36">
+    <p class="kicker text-accent" data-anima="fade">
+      Testo. Descarto. Fico com pouco.
+    </p>
+    <p class="display-2 mt-6 max-w-[18ch]" data-anima>
+      O que sobreviveu virou produto.
+    </p>
+    <p
+      class="mt-6 max-w-xl text-muted"
+      data-anima="fade"
+      data-anima-delay="0.1"
+    >
+      O projeto final é consequência, nunca ponto de partida. As provas vêm a
+      seguir.
+    </p>
+  </div>
+</section>

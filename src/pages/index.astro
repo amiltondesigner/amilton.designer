@@ -1,20 +1,28 @@
 ---
+import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
-import Nav from "../components/Nav.astro";
-import Hero from "../components/Hero.astro";
-import Work from "../components/Work.astro";
-import About from "../components/About.astro";
-import Contact from "../components/Contact.astro";
-import Footer from "../components/Footer.astro";
+import Abertura from "../components/experience/Abertura.astro";
+import Descoberta from "../components/experience/Descoberta.astro";
+import Pensamento from "../components/experience/Pensamento.astro";
+import Evidencias from "../components/experience/Evidencias.astro";
+import Conexao from "../components/experience/Conexao.astro";
+import CaseOverlay from "../components/experience/CaseOverlay.tsx";
+import ConceptMap from "../components/experience/ConceptMap.tsx";
+
+const casos = (await getCollection("projects"))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((p) => ({ id: p.id, title: p.data.title }));
 ---
 
 <Base>
-  <Nav />
+  <a href="#descoberta" class="skip-link"> Pular a abertura </a>
+  <ConceptMap client:idle casos={casos} />
   <main>
-    <Hero />
-    <Work />
-    <About />
-    <Contact />
+    <Abertura />
+    <Descoberta />
+    <Pensamento />
+    <Evidencias />
+    <Conexao />
   </main>
-  <Footer />
+  <CaseOverlay client:idle />
 </Base>

@@ -14,17 +14,26 @@ const socials = [
 ];
 ---
 
-<nav class:list={["flex flex-wrap gap-x-6 gap-y-2 text-sm", className]}>
+<!-- lista simples, sem landmark: o componente aparece 2x na home e
+     dois <nav> iguais viram ruído pra leitores de tela (landmark-unique) -->
+<ul
+  class:list={[
+    "flex list-none flex-wrap gap-x-6 gap-y-2 p-0 text-sm",
+    className,
+  ]}
+>
   {
     socials.map((s) => (
-      <a
-        href={s.href}
-        target="_blank"
-        rel="noopener"
-        class="link-line text-muted transition-colors hover:text-foreground"
-      >
-        {s.label}
-      </a>
+      <li>
+        <a
+          href={s.href}
+          target="_blank"
+          rel="noopener"
+          class="link-line text-muted transition-colors hover:text-foreground"
+        >
+          {s.label}
+        </a>
+      </li>
     ))
   }
-</nav>
+</ul>

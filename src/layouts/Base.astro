@@ -1,8 +1,7 @@
 ---
-import "@fontsource-variable/inter";
+import "@fontsource-variable/inter/index.css";
 import "lenis/dist/lenis.css";
 import "../styles/global.css";
-import { ClientRouter } from "astro:transitions";
 import { site } from "../config/site";
 
 interface Props {
@@ -14,6 +13,9 @@ const {
   title = `${site.name} · ${site.role}`,
   description = site.tagline,
 } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL("/og.png", Astro.site);
 ---
 
 <!doctype html>
@@ -24,61 +26,42 @@ const {
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#0b0b0d" />
+    <meta name="theme-color" content="#FAF6F0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="/fonts/ClashDisplay-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <ClientRouter />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
   </head>
-  <body>
+  <body data-chapter="abertura">
     <slot />
 
     <script>
-      import Lenis from "lenis";
+      import { initExperience } from "../scripts/experience";
 
-      const prefersReduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-
-      // Lenis — instância única que sobrevive às View Transitions.
-      function initLenis() {
-        if (prefersReduced || (window as any).__lenis) return;
-        const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
-        (window as any).__lenis = lenis;
-        function raf(time: number) {
-          lenis.raf(time);
-          requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
+      // Sem ClientRouter (o overlay de cases cuida da transição home ↔ case),
+      // então o ciclo de vida é o do documento mesmo.
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => initExperience(), {
+          once: true,
+        });
+      } else {
+        initExperience();
       }
-
-      // Reveal on-scroll — re-observa a cada navegação (DOM novo).
-      function initReveal() {
-        const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
-        if (prefersReduced || !("IntersectionObserver" in window) || !els.length)
-          return;
-        document.documentElement.classList.add("reveal-ready");
-        const io = new IntersectionObserver(
-          (entries) => {
-            for (const e of entries) {
-              if (e.isIntersecting) {
-                e.target.classList.add("is-visible");
-                io.unobserve(e.target);
-              }
-            }
-          },
-          { rootMargin: "0px 0px -10% 0px", threshold: 0.1 },
-        );
-        els.forEach((el) => io.observe(el));
-      }
-
-      function init() {
-        initLenis();
-        initReveal();
-      }
-
-      document.addEventListener("astro:page-load", init);
     </script>
   </body>
 </html>

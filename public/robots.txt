@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /dev/
+
+Sitemap: https://amiltondesigner.com/sitemap-index.xml
