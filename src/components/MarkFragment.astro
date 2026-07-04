@@ -1,0 +1,69 @@
+---
+/**
+ * Fragmento da marca A+S — eco abstrato do símbolo do hero. Depois que a
+ * marca explode na Abertura, pedaços dela ficam pelos capítulos: grandes,
+ * sangrando por uma borda, tingidos pela dominante do capítulo (a cor conta
+ * a narrativa, ver VISION). Vê-se só um trecho do traço, nunca a marca inteira.
+ *
+ * Estrutura: a div externa posiciona e recebe o parallax (yPercent via GSAP);
+ * o svg interno guarda a rotação (CSS) — separados pra os transforms não
+ * brigarem. Decorativo: aria-hidden, pointer-events none, z atrás do conteúdo
+ * (a seção que o recebe precisa de `relative isolate`).
+ *
+ * Posição/tamanho vêm por `class` (utilitários Tailwind, incluindo
+ * `hidden md:block`); tint e rotação por prop. O parallax só roda no contexto
+ * de cenas (desktop com motion); mobile e reduced-motion ficam estáticos.
+ */
+import { AM_MARK } from "../config/mark";
+
+interface Props {
+  class?: string;
+  /** % do accent do capítulo no preenchimento (padrão 12) */
+  intensidade?: number;
+  /** rotação do traço em graus (padrão 0) */
+  rotacao?: number;
+  /** intensidade do parallax; 0 desliga (padrão 1) */
+  parallax?: number;
+}
+const {
+  class: className = "",
+  intensidade = 12,
+  rotacao = 0,
+  parallax = 1,
+} = Astro.props;
+---
+
+<div
+  class:list={["mark-fragment", className]}
+  style={`--frag-tint:${intensidade}%`}
+  data-parallax={parallax}
+  aria-hidden="true"
+>
+  <svg
+    class="mark-fragment__svg"
+    viewBox="0 0 443 443"
+    fill="none"
+    style={`transform: rotate(${rotacao}deg)`}
+  >
+    <path d={AM_MARK}></path>
+  </svg>
+</div>
+
+<style>
+  .mark-fragment {
+    position: absolute;
+    z-index: -1;
+    aspect-ratio: 1 / 1;
+    pointer-events: none;
+  }
+  .mark-fragment__svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .mark-fragment__svg path {
+    fill: color-mix(in oklab, var(--ch-accent) var(--frag-tint, 12%), transparent);
+    transition: fill 0.9s var(--ease-soft);
+  }
+</style>

@@ -157,12 +157,38 @@ function setupReveals() {
   });
 }
 
+/** Parallax sutil dos fragmentos da marca — só no contexto de cenas
+ *  (desktop com motion); mobile e reduced-motion ficam estáticos. */
+function setupParallax() {
+  gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((el) => {
+    const amt = parseFloat(el.dataset.parallax || "1");
+    if (!amt) return;
+    gsap.fromTo(
+      el,
+      { yPercent: -7 * amt },
+      {
+        yPercent: 7 * amt,
+        ease: "none",
+        scrollTrigger: {
+          // a seção tem geometria estável; o fragmento é absoluto e o
+          // ScrollTrigger media mal a posição dele (ficava preso no fim)
+          trigger: el.closest("section") ?? el,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      },
+    );
+  });
+}
+
 function initScenes(): Cleanup {
   const mm = gsap.matchMedia();
   mm.add(SCENES_MEDIA, () => {
     // setups re-consultam o DOM a cada chamada (sobrevivem a navegações)
     const ctx = gsap.context((self) => {
       setupReveals();
+      setupParallax();
       sceneSetups.forEach((setup) => setup(self!));
     });
     return () => ctx.revert();

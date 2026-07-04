@@ -66,12 +66,15 @@
   --descarte: #d92d20;
   --whatsapp: #25d366;
 }
+/* Capítulo escuro: a abertura explode e apaga a luz (ver Abertura.astro).
+   Superfícies aqui clareiam só um degrau sobre o fundo — ver --surface-boost. */
 body[data-chapter="descoberta"] {
-  --ch-bg: #eef3fb;
-  --ch-fg: #131a26;
-  --ch-muted: #475569;
-  --ch-accent: #2b5ce0;
-  --ch-deep: #16308c;
+  --ch-bg: #0f1522;
+  --ch-fg: #f2f5fb;
+  --ch-muted: #a7b4cb;
+  --ch-accent: #8fb3ff;
+  --ch-deep: #101b36;
+  --surface-boost: 9%;
 }
 body[data-chapter="pensamento"] {
   --ch-bg: #fbf2e9;
@@ -96,9 +99,14 @@ body[data-chapter="conexao"] {
 }
 
 /* Derivadas — recomputadas POR ELEMENTO (acompanham overrides locais
-   como .case-tema, além do capítulo do body) */
+   como .case-tema, além do capítulo do body).
+   --surface-boost: quanto de branco entra na superfície. Capítulos claros
+   clareiam bastante (58%); o capítulo escuro, só um degrau (9%). */
+:root {
+  --surface-boost: 58%;
+}
 :where(*) {
-  --surface: color-mix(in oklab, #ffffff 58%, var(--ch-bg));
+  --surface: color-mix(in oklab, #ffffff var(--surface-boost), var(--ch-bg));
   --borda: color-mix(in oklab, var(--ch-fg) 14%, var(--ch-bg));
   /* 86% garante AA (4.5:1) em texto pequeno em todas as paletas */
   --faint: color-mix(in oklab, var(--ch-muted) 86%, var(--ch-bg));
@@ -150,6 +158,7 @@ body[data-chapter="conexao"] {
   html {
     -webkit-text-size-adjust: 100%;
     background-color: #faf6f0; /* overscroll sempre quente */
+    overflow-x: clip; /* fragmentos da marca sangram sem gerar scroll lateral */
   }
   /* smooth nativo SÓ quando o Lenis não assumiu (ele marca <html>.lenis);
      os dois juntos brigam em qualquer scroll programático */
@@ -160,6 +169,10 @@ body[data-chapter="conexao"] {
   body {
     background-color: var(--ch-bg);
     color: var(--ch-fg);
+    /* fragmentos da marca sangram pelas bordas dos capítulos; clip (não
+       hidden) evita barra horizontal sem virar container de scroll que
+       quebraria os pins/sticky */
+    overflow-x: clip;
     font-family: var(--font-sans);
     font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
@@ -171,9 +184,10 @@ body[data-chapter="conexao"] {
     transition-timing-function: var(--ease-soft);
   }
 
+  /* fundo do capítulo sobre o acento: funciona no claro e no escuro */
   ::selection {
     background-color: var(--ch-accent);
-    color: #fff;
+    color: var(--ch-bg);
   }
 
   :focus-visible {
@@ -398,6 +412,8 @@ body[data-chapter="conexao"] {
   --ch-muted: #57534e;
   --ch-accent: #2b5ce0;
   --ch-deep: #16308c;
+  /* leitura sempre clara, mesmo com o overlay aberto no capítulo escuro */
+  --surface-boost: 58%;
 }
 
 /* ============================================================
