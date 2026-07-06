@@ -1,10 +1,9 @@
 /**
  * O ponto + mapa conceitual — a navegação da experiência (VISION.md):
  * sem navbar; um ponto fixo (na cor do capítulo atual) abre um mapa
- * fullscreen. Cada nó leva a um destino DISTINTO; os 4 cases orbitam
- * "As provas" como satélites e abrem direto no overlay (são <a> reais,
- * o CaseOverlay intercepta o clique quando o dialog fecha).
- * Manifesto é conteúdo exclusivo daqui, recompensa de quem explora.
+ * fullscreen. Cada nó leva a um destino DISTINTO. "As provas" leva ao
+ * capítulo Evidências; os projetos NÃO aparecem listados no mapa (decisão
+ * do Amilton, 2026-07-06). Manifesto é conteúdo exclusivo daqui.
  *
  * Constelação com linhas no desktop; lista editorial no mobile
  * (a troca é só CSS, o DOM é o mesmo). <dialog> nativo: foco preso,
@@ -14,8 +13,6 @@ import { useRef, useState } from "preact/hooks";
 import { mapNodes } from "../../config/chapters";
 import { whatsappUrl } from "../../config/site";
 
-type Caso = { id: string; title: string };
-
 const POSICOES: Record<string, { x: number; y: number }> = {
   quem: { x: 20, y: 22 },
   pensamento: { x: 48, y: 32 },
@@ -23,14 +20,6 @@ const POSICOES: Record<string, { x: number; y: number }> = {
   manifesto: { x: 85, y: 80 },
   conversar: { x: 25, y: 76 },
 };
-
-/** órbitas dos cases em volta de "As provas" */
-const SATELITES = [
-  { x: 47, y: 47 },
-  { x: 81, y: 44 },
-  { x: 44, y: 70 },
-  { x: 80, y: 66 },
-];
 
 const LIGACOES: Array<[string, string]> = [
   ["quem", "pensamento"],
@@ -57,7 +46,7 @@ function lenis():
   ).__lenis;
 }
 
-export default function ConceptMap({ casos = [] }: { casos?: Caso[] }) {
+export default function ConceptMap() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [vista, setVista] = useState<"mapa" | "manifesto">("mapa");
 
@@ -118,6 +107,7 @@ export default function ConceptMap({ casos = [] }: { casos?: Caso[] }) {
         aria-label="Abrir o mapa da experiência"
         aria-haspopup="dialog"
       >
+        <span class="ponto-rotulo">Mapa</span>
         <span class="ponto" aria-hidden="true"></span>
       </button>
 
@@ -126,6 +116,13 @@ export default function ConceptMap({ casos = [] }: { casos?: Caso[] }) {
         class="mapa-overlay"
         aria-label="Mapa da experiência"
         onClose={aoFechar}
+        onCancel={(e) => {
+          // Esc dentro do Manifesto volta pro mapa; no mapa, fecha de fato
+          if (vista === "manifesto") {
+            e.preventDefault();
+            setVista("mapa");
+          }
+        }}
       >
         <div class="mapa-topo">
           <p class="kicker">
@@ -169,35 +166,9 @@ export default function ConceptMap({ casos = [] }: { casos?: Caso[] }) {
                   y2={POSICOES[b].y}
                 />
               ))}
-              {casos.map((c, i) => (
-                <line
-                  key={c.id}
-                  class="linha-satelite"
-                  x1={POSICOES.provas.x}
-                  y1={POSICOES.provas.y}
-                  x2={SATELITES[i % SATELITES.length].x}
-                  y2={SATELITES[i % SATELITES.length].y}
-                />
-              ))}
             </svg>
             <div class="mapa-nos">
-              {/* ordem do DOM = ordem de leitura na lista mobile:
-                  satélites logo depois de "As provas", a quem pertencem */}
-              {mapNodes.slice(0, 3).map((no, i) => noBtn(no, i))}
-              {casos.map((c, i) => (
-                <a
-                  key={c.id}
-                  class="mapa-no mapa-caso"
-                  href={`/trabalho/${c.id}`}
-                  style={`--i:${3 + i}; --x:${SATELITES[i % SATELITES.length].x}%; --y:${SATELITES[i % SATELITES.length].y}%`}
-                  onClick={() => dialogRef.current?.close()}
-                >
-                  <span class="mapa-no-rotulo">{c.title}</span>
-                </a>
-              ))}
-              {mapNodes
-                .slice(3)
-                .map((no, i) => noBtn(no, 3 + casos.length + i))}
+              {mapNodes.map((no, i) => noBtn(no, i))}
             </div>
             <p class="mapa-dica hidden md:block" aria-hidden="true">
               esc fecha
