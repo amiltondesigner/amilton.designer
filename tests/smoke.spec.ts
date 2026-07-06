@@ -77,19 +77,25 @@ test.describe("overlay de cases", () => {
 });
 
 test.describe("mapa conceitual", () => {
-  test("o ponto abre o mapa, o manifesto existe e Esc fecha", async ({
+  test("o ponto abre o mapa; Esc no manifesto volta um nível, Esc no mapa fecha", async ({
     page,
   }) => {
     await page.goto("/", { waitUntil: "networkidle" });
     await page.click(".ponto-mapa");
     const mapa = page.locator(".mapa-overlay");
     await expect(mapa).toHaveAttribute("open", "");
-    // 5 destinos distintos + 4 cases satélites
-    await expect(mapa.locator(".mapa-no")).toHaveCount(9);
+    // 5 destinos distintos (os projetos não são listados no mapa)
+    await expect(mapa.locator(".mapa-no")).toHaveCount(5);
 
     await mapa.getByRole("button", { name: /Manifesto/ }).click();
     await expect(mapa.locator(".manifesto-linha").first()).toBeVisible();
 
+    // Esc no manifesto volta pro mapa, sem fechar o dialog
+    await page.keyboard.press("Escape");
+    await expect(mapa.locator(".manifesto")).toHaveCount(0);
+    await expect(mapa).toHaveAttribute("open", "");
+
+    // Esc no mapa fecha de fato
     await page.keyboard.press("Escape");
     await expect(mapa).not.toHaveAttribute("open", "");
   });
@@ -115,20 +121,6 @@ test.describe("mapa conceitual", () => {
         { timeout: 8_000 },
       )
       .toBeLessThan(500);
-  });
-
-  test("case satélite do mapa abre direto no overlay", async ({ page }) => {
-    await page.goto("/", { waitUntil: "networkidle" });
-    await page.click(".ponto-mapa");
-    await page.locator('.mapa-caso[href="/trabalho/serenity"]').click();
-    const overlay = page.locator(".case-overlay");
-    await expect(overlay).toHaveAttribute("open", "");
-    await expect(page).toHaveURL(/\/trabalho\/serenity/);
-    await expect(overlay.locator("h1")).toContainText("App de meditação");
-    await expect(page.locator(".mapa-overlay")).not.toHaveAttribute(
-      "open",
-      "",
-    );
   });
 });
 
