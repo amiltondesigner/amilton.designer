@@ -14,7 +14,7 @@
  * `hidden md:block`); tint e rotação por prop. O parallax só roda no contexto
  * de cenas (desktop com motion); mobile e reduced-motion ficam estáticos.
  */
-import { AM_MARK } from "../config/mark";
+import { AM_MARK, MARK_VIEWBOX } from "../config/mark";
 
 interface Props {
   class?: string;
@@ -41,7 +41,7 @@ const {
 >
   <svg
     class="mark-fragment__svg"
-    viewBox="0 0 443 443"
+    viewBox={MARK_VIEWBOX}
     fill="none"
     style={`transform: rotate(${rotacao}deg)`}
   >
