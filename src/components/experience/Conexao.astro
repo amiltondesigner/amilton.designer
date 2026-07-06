@@ -1,14 +1,15 @@
 ---
 /**
- * Capítulo 05 — Conexão. Contato como consequência da experiência.
- * Violeta. O builder de WhatsApp da v1 segue intacto na lógica;
- * o re-skin fino acontece na Fase 6.
+ * Capítulo 05 — Conexão. Contato como consequência. Violeta. O convite fica
+ * no violeta claro (headline + builder de WhatsApp); o FECHO é uma banda
+ * violeta-profunda full-bleed onde a marca A+S — que veio em pedaços pelos
+ * capítulos — aparece INTEIRA pela primeira vez (o pagamento do conceito).
+ * Ela se remonta ao entrar (scale/rotação → 0), só no desktop com motion.
  */
 import WhatsAppBuilder from "../contact/WhatsAppBuilder.tsx";
 import Socials from "../Socials.astro";
-import SymbolMark from "../SymbolMark.astro";
-import MarkFragment from "../MarkFragment.astro";
 import { site } from "../../config/site";
+import { AM_MARK, MARK_VIEWBOX } from "../../config/mark";
 
 const year = new Date().getFullYear();
 ---
@@ -16,50 +17,132 @@ const year = new Date().getFullYear();
 <section
   id="conexao"
   data-chapter-section="conexao"
-  class="wrap scroll-mt-24 pt-28 md:pt-44 relative isolate"
+  class="scroll-mt-24 relative isolate"
 >
-  <!-- eco da marca: o último pedaço do A+S, em violeta -->
-  <MarkFragment
-    class="hidden md:block top-[10%] -left-40 w-[560px] lg:w-[660px]"
-    intensidade={11}
-    rotacao={10}
-  />
-  <p class="kicker text-accent" data-anima="fade">Conexão</p>
-  <div class="mt-6 max-w-3xl">
-    <h2 class="display-2" data-anima>Chegou até aqui. Vamos conversar?</h2>
-    <p
-      class="mt-6 max-w-xl text-lg text-muted"
-      data-anima
-      data-anima-delay="0.1"
-    >
-      Monte sua mensagem em alguns toques, tudo opcional. Eu recebo no WhatsApp
-      já com o contexto e respondo rápido. Sem formulário, sem espera.
-    </p>
+  <div class="wrap pt-28 md:pt-44">
+    <p class="kicker text-accent" data-anima="fade">Conexão</p>
+    <div class="mt-6 max-w-4xl">
+      <h2 class="display-1 max-w-[16ch]">
+        <span class="p-mask"
+          ><span class="p-mask-inner">Chegou até aqui.</span></span
+        >
+        <span class="p-mask"
+          ><span class="p-mask-inner text-accent">Vamos conversar?</span></span
+        >
+      </h2>
+      <p
+        class="mt-8 max-w-xl text-lg leading-relaxed text-muted"
+        data-anima
+        data-anima-delay="0.1"
+      >
+        Monte sua mensagem em alguns toques, tudo opcional. Eu recebo no WhatsApp
+        já com o contexto e respondo rápido. Sem formulário, sem espera.
+      </p>
+    </div>
+
+    <WhatsAppBuilder client:visible />
   </div>
 
-  <WhatsAppBuilder client:visible />
-
-  <footer class="mt-28 border-t border-border py-12">
-    <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-      <div>
-        <a href="#abertura" class="inline-flex items-center gap-2.5 font-medium">
-          <SymbolMark class="size-6 shrink-0" /> Amilton Schlemper
-        </a>
-        <p class="mt-3 text-sm text-faint">{site.location}</p>
+  <!-- Fecho: a marca inteira, remontada, na banda violeta-profunda -->
+  <div class="beat mt-28 md:mt-40">
+    <div class="wrap py-24 md:py-32">
+      <div class="grid grid-cols-1 items-center gap-12 md:grid-cols-12 md:gap-8">
+        <div class="reassemble md:col-span-4" aria-hidden="true">
+          <svg viewBox={MARK_VIEWBOX} fill="currentColor" class="w-40 md:w-full">
+            <path d={AM_MARK}></path>
+          </svg>
+        </div>
+        <div class="md:col-span-8 md:pl-6">
+          <p class="beat-lead">Obrigado por chegar até o fim.</p>
+          <p class="beat-signature mt-4">Amilton Schlemper</p>
+          <p class="beat-role mt-3">{site.role} · {site.location}</p>
+          <div class="mt-8">
+            <Socials />
+          </div>
+        </div>
       </div>
-      <Socials />
-    </div>
-    <div
-      class="mt-10 flex flex-col gap-2 text-sm text-faint md:flex-row md:items-center md:justify-between"
-    >
-      <span class="tabular-nums"
-        >© {year} {site.name} · Todos os direitos reservados</span
+
+      <div
+        class="beat-rodape mt-16 flex flex-col gap-2 border-t pt-8 text-sm md:flex-row md:items-center md:justify-between"
       >
-      <a
-        href="#abertura"
-        class="link-line transition-colors hover:text-foreground"
-        >Voltar ao começo ↑</a
-      >
+        <span class="tabular-nums">
+          © {year} {site.name} · Todos os direitos reservados
+        </span>
+        <a href="#abertura" class="beat-topo link-line">Voltar ao começo ↑</a>
+      </div>
     </div>
-  </footer>
+  </div>
 </section>
+
+<style>
+  /* o fecho: banda full-bleed no MESMO tom da Descoberta ("Quem pensa
+     assim"), fechando o site num bookend escuro (Amilton, 2026-07-06) */
+  .beat {
+    background-color: #0f1522;
+    color: var(--paper);
+  }
+  /* links (redes + voltar ao topo) legíveis sobre o violeta profundo —
+     o padrão text-muted do Socials some no escuro */
+  .beat :global(a) {
+    color: color-mix(in oklab, var(--paper) 80%, transparent);
+    transition: color 0.3s ease;
+  }
+  .beat :global(a:hover) {
+    color: var(--paper);
+  }
+  .reassemble svg {
+    /* paper com um toque do azul da Descoberta, pra casar com o navy */
+    color: color-mix(in oklab, var(--paper) 88%, #8fb3ff);
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+  .beat-lead {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+    letter-spacing: -0.01em;
+    color: color-mix(in oklab, var(--paper) 82%, transparent);
+  }
+  .beat-signature {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.015em;
+  }
+  .beat-role {
+    color: color-mix(in oklab, var(--paper) 72%, transparent);
+  }
+  .beat-rodape {
+    color: color-mix(in oklab, var(--paper) 66%, transparent);
+    border-color: color-mix(in oklab, var(--paper) 18%, transparent);
+  }
+  .beat-topo:hover {
+    color: var(--paper);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { registerScene } from "../../scripts/experience";
+
+  registerScene(() => {
+    const mark = document.querySelector<SVGElement>("#conexao .reassemble svg");
+    if (!mark) return;
+    // a marca se remonta: dos pedaços (girada, encolhida) para o todo
+    gsap.from(mark, {
+      scale: 0.82,
+      rotate: -8,
+      opacity: 0,
+      duration: 1.5,
+      ease: "expo.out",
+      transformOrigin: "50% 50%",
+      scrollTrigger: {
+        trigger: mark,
+        start: "top 82%",
+        toggleActions: "play none none reverse",
+      },
+    });
+  });
+</script>

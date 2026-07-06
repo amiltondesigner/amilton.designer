@@ -291,6 +291,20 @@ body[data-chapter="conexao"] {
     text-transform: uppercase;
   }
 
+  /* Máscara de título — o texto sobe de dentro (motion-assinatura, o mesmo
+     do hero e do nome na Descoberta). O reveal fica no experience.ts e só
+     roda no desktop com motion; sem JS/mobile/reduced o texto nasce visível. */
+  .p-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+  .p-mask-inner {
+    display: block;
+    will-change: transform;
+  }
+
   /* Momento de impacto — o fundo inunda com a versão profunda */
   .impact {
     background-color: var(--ch-deep);
@@ -517,6 +531,8 @@ body:has(dialog[open]) {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0;
+  /* mobile/tablet: círculo com alvo de toque confortável */
   width: 3rem;
   height: 3rem;
   border-radius: 9999px;
@@ -529,9 +545,34 @@ body:has(dialog[open]) {
     border-color 0.3s ease,
     background-color 0.9s var(--ease-soft);
 }
+/* o rótulo só aparece no desktop (lg+), onde o CTA fixo do builder some
+   e há hover: mata o "mystery meat" sem virar navbar nem colidir no mobile */
+.ponto-rotulo {
+  display: none;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  color: var(--ch-muted);
+  transition: color 0.3s ease;
+}
+@media (min-width: 1024px) {
+  .ponto-mapa {
+    width: auto;
+    height: auto;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+  }
+  .ponto-rotulo {
+    display: inline;
+  }
+}
 .ponto-mapa:hover {
-  transform: scale(1.08);
+  transform: scale(1.06);
   border-color: var(--ch-muted);
+}
+.ponto-mapa:hover .ponto-rotulo {
+  color: var(--ch-fg);
 }
 .ponto-mapa .ponto {
   width: 0.8rem;
@@ -656,20 +697,6 @@ body:has(dialog[open]) {
   font-size: 0.85rem;
   color: color-mix(in oklab, var(--paper) 72%, transparent);
 }
-/* satélites: os cases orbitando "As provas" */
-.mapa-caso {
-  text-decoration: none;
-}
-.mapa-caso .mapa-no-rotulo {
-  font-size: clamp(1.15rem, 2.4vw, 1.55rem);
-  font-weight: 500;
-  color: color-mix(in oklab, var(--paper) 86%, transparent);
-}
-@media (max-width: 767px) {
-  .mapa-caso {
-    padding-left: 1.5rem;
-  }
-}
 .mapa-dica {
   position: absolute;
   bottom: 1.25rem;
@@ -700,10 +727,6 @@ body:has(dialog[open]) {
     stroke: color-mix(in oklab, var(--paper) 16%, transparent);
     stroke-width: 1.5px;
     vector-effect: non-scaling-stroke;
-  }
-  .mapa-linhas .linha-satelite {
-    stroke: color-mix(in oklab, var(--paper) 14%, transparent);
-    stroke-dasharray: 4 5;
   }
   .mapa-nos {
     display: block;

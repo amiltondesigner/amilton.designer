@@ -1,9 +1,14 @@
 ---
 /**
- * Capítulo 02 — Descoberta. Quem pensa assim, sem seção "Sobre":
- * o nome chega grande (linhas mascaradas) e a bio vem em fragmentos
- * que o scroll revela. Entra o azul. Cenas só no desktop; o HTML
- * nasce completo e visível.
+ * Capítulo 02 — Descoberta. Quem pensa assim, sem seção "Sobre": um spread
+ * editorial escuro onde o retrato INVADE o nome gigante (a foto entra sobre
+ * a cauda de "Schlemper", como capa de revista). Entra o azul. O nome sobe
+ * de máscaras (motion-assinatura global). Serviços viram uma linha
+ * tipográfica (não mais grid que parece botão); os anos são um número
+ * editorial, não contador de dashboard.
+ *
+ * Cenas só no desktop; o HTML nasce completo e visível (mobile/no-JS/reduced
+ * empilham nome → foto e mostram tudo).
  */
 import { Image } from "astro:assets";
 import avatar from "../../assets/avatar.png";
@@ -19,20 +24,38 @@ import MarkFragment from "../MarkFragment.astro";
 >
   <!-- eco da marca: um pedaço do A+S que sobrou da explosão do hero -->
   <MarkFragment
-    class="hidden md:block top-[6%] -right-44 w-[560px] lg:w-[680px]"
-    intensidade={16}
-    rotacao={-6}
+    class="hidden md:block top-[10%] -left-[17rem] w-[820px] lg:w-[1040px]"
+    intensidade={18}
   />
-  <p class="kicker text-accent" data-anima="fade">
-    Quem pensa assim
-  </p>
 
-  <h2 class="display-1 mt-6" data-descoberta-nome>
-    <span class="linha"><span class="linha-inner">Amilton</span></span>
-    <span class="linha"><span class="linha-inner">Schlemper</span></span>
-  </h2>
+  <!-- Spread: o nome gigante e o retrato se sobrepõem -->
+  <p class="kicker text-accent" data-anima="fade">Quem pensa assim</p>
+  <div class="relative mt-8 grid grid-cols-1 gap-10 md:mt-10 md:grid-cols-12 md:items-start md:gap-0">
+    <h2 class="display-1 relative z-20 md:col-span-8 md:col-start-1 md:row-start-1 md:mt-16">
+      <span class="p-mask"><span class="p-mask-inner">Amilton</span></span>
+      <span class="p-mask"><span class="p-mask-inner">Schlemper</span></span>
+    </h2>
 
-  <div class="mt-16 grid grid-cols-1 gap-12 md:mt-24 md:grid-cols-12 md:gap-16">
+    <div
+      class="relative z-0 md:col-span-5 md:col-start-8 md:row-start-1 md:-ml-8 lg:-ml-12"
+      data-anima="scale"
+    >
+      <div class="aspect-[4/5] w-full overflow-hidden rounded-lg border border-border bg-surface">
+        <Image
+          src={avatar}
+          alt={`Retrato de ${site.name}`}
+          width={840}
+          height={1050}
+          class="h-full w-full scale-[1.08] object-cover"
+          data-descoberta-foto
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- A bio, assimétrica: a frase grande à esquerda, o número editorial dos
+       anos à direita -->
+  <div class="mt-20 grid grid-cols-1 gap-10 md:mt-28 md:grid-cols-12 md:gap-10">
     <div class="md:col-span-7">
       <p
         class="font-display text-3xl font-medium leading-[1.15] tracking-tight md:text-4xl"
@@ -41,85 +64,66 @@ import MarkFragment from "../MarkFragment.astro";
         {site.bio}
       </p>
       <p
-        class="mt-6 max-w-2xl text-lg leading-relaxed text-muted"
+        class="mt-8 max-w-xl text-lg leading-relaxed text-muted"
         data-anima
         data-anima-delay="0.1"
       >
-        Comecei em agência como Diretor de Arte, passei anos desenhando
-        govtech que prefeituras usam no dia a dia e hoje desenho produto em
-        logística digital. No caminho: e-commerce, marcas e design systems.
-        Sempre com o mesmo objetivo, clareza que vira resultado.
+        Comecei em agência como Diretor de Arte, passei anos desenhando govtech
+        que prefeituras usam no dia a dia e hoje desenho produto em logística
+        digital. No caminho: e-commerce, marcas e design systems. Sempre com o
+        mesmo objetivo, clareza que vira resultado.
       </p>
-
-      <div class="mt-12" data-anima>
-        <div
-          class="font-display text-5xl font-semibold tabular-nums"
-          data-contagem={site.yearsOfExperience}
-          data-contagem-sufixo="+"
-        >
-          {site.yearsOfExperience}+
-        </div>
-        <div class="eyebrow mt-2">anos de experiência</div>
-      </div>
-
-      <div
-        class="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border"
-        data-anima-grupo
-      >
-        {
-          services.map((s) => (
-            <div class="bg-background p-4 transition-colors duration-700 md:p-5">
-              <span class="text-sm md:text-base">{s.label}</span>
-            </div>
-          ))
-        }
-      </div>
-
-      <div
-        class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-faint"
-        data-anima="fade"
-      >
-        <span class="inline-flex items-center gap-2">
-          <span class="size-1.5 rounded-full bg-accent"></span> Disponível para
-          freelance
-        </span>
-        <span>{site.location}</span>
-      </div>
-      <div class="mt-6" data-anima="fade" data-anima-delay="0.1">
-        <Socials />
-      </div>
     </div>
 
-    <div class="md:col-span-5">
-      <div
-        class="aspect-[4/5] w-full overflow-hidden rounded-lg border border-border bg-surface md:sticky md:top-28"
-        data-anima="scale"
-      >
-        <Image
-          src={avatar}
-          alt={`Retrato de ${site.name}`}
-          width={840}
-          height={840}
-          class="h-full w-full scale-[1.08] object-cover"
-          data-descoberta-foto
-        />
+    <div class="md:col-span-4 md:col-start-9 md:self-end" data-anima="scale">
+      <div class="flex items-baseline gap-3">
+        <span
+          class="font-display text-7xl font-semibold leading-none tabular-nums text-accent md:text-8xl"
+        >
+          {site.yearsOfExperience}
+        </span>
+        <span class="font-display text-3xl font-medium text-accent">anos</span>
       </div>
+      <p class="mt-4 max-w-xs leading-relaxed text-muted">
+        desenhando produto, do setor público à logística digital.
+      </p>
     </div>
   </div>
-</section>
 
-<style>
-  .linha {
-    display: block;
-    overflow: hidden;
-    padding-bottom: 0.12em;
-    margin-bottom: -0.12em;
-  }
-  .linha-inner {
-    display: inline-block;
-    will-change: transform;
-  }
-</style>
+  <!-- Serviços como linha tipográfica (não botões) -->
+  <div class="mt-16 border-t border-border pt-8 md:mt-24" data-anima>
+    <p class="eyebrow">O que eu faço</p>
+    <p
+      class="mt-5 font-display text-2xl font-medium leading-snug tracking-tight md:text-3xl"
+    >
+      {
+        services.map((s, i) => (
+          <>
+            {s.label}
+            {i < services.length - 1 && (
+              <span class="px-2 text-accent">·</span>
+            )}
+          </>
+        ))
+      }
+    </p>
+  </div>
+
+  <!-- Disponibilidade + redes -->
+  <div
+    class="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-faint"
+    data-anima="fade"
+  >
+    <span class="inline-flex items-center gap-2">
+      <span class="size-1.5 rounded-full bg-accent"></span> Disponível para
+      freelance
+    </span>
+    <span>{site.location}</span>
+  </div>
+  <div class="mt-6" data-anima="fade" data-anima-delay="0.1">
+    <Socials />
+  </div>
+</section>
 
 <script>
   import { gsap } from "gsap";
@@ -128,22 +132,6 @@ import MarkFragment from "../MarkFragment.astro";
   registerScene(() => {
     const section = document.getElementById("descoberta");
     if (!section) return;
-
-    // O nome chega grande, linha a linha
-    const linhas = section.querySelectorAll<HTMLElement>(".linha-inner");
-    if (linhas.length) {
-      gsap.from(linhas, {
-        yPercent: 112,
-        duration: 1.1,
-        ease: "expo.out",
-        stagger: 0.12,
-        scrollTrigger: {
-          trigger: section,
-          start: "top 70%",
-          toggleActions: "play none none reverse",
-        },
-      });
-    }
 
     // Parallax interno da foto (a moldura fica; a imagem respira)
     const foto = section.querySelector<HTMLElement>("[data-descoberta-foto]");
@@ -163,31 +151,5 @@ import MarkFragment from "../MarkFragment.astro";
         },
       );
     }
-
-    // Números contam ao entrar (restauram o texto exato ao final/interrupção)
-    section
-      .querySelectorAll<HTMLElement>("[data-contagem]")
-      .forEach((el) => {
-        const fim = parseFloat(el.dataset.contagem || "0");
-        const pad = parseInt(el.dataset.contagemPad || "0", 10);
-        const sufixo = el.dataset.contagemSufixo || "";
-        const original = el.textContent;
-        const restaura = () => {
-          el.textContent = original;
-        };
-        const obj = { v: 0 };
-        gsap.to(obj, {
-          v: fim,
-          duration: 1.4,
-          ease: "power2.out",
-          scrollTrigger: { trigger: el, start: "top 88%" },
-          onUpdate() {
-            el.textContent =
-              String(Math.round(obj.v)).padStart(pad, "0") + sufixo;
-          },
-          onComplete: restaura,
-          onInterrupt: restaura,
-        });
-      });
   });
 </script>

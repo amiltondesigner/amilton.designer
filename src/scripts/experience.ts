@@ -141,6 +141,21 @@ function setupReveals() {
     gsap.from(el, vars);
   });
 
+  // Títulos mascarados (.p-mask > .p-mask-inner): o texto sobe de dentro.
+  // Motion-assinatura reaproveitado pelos capítulos; nasce visível sem cena.
+  gsap.utils.toArray<HTMLElement>(".p-mask-inner").forEach((el) => {
+    gsap.from(el, {
+      yPercent: 118,
+      duration: 1.1,
+      ease: "expo.out",
+      scrollTrigger: {
+        trigger: el,
+        start: "top 90%",
+        toggleActions: "play none none reverse",
+      },
+    });
+  });
+
   gsap.utils.toArray<HTMLElement>("[data-anima-grupo]").forEach((grupo) => {
     gsap.from(grupo.children, {
       ...base,

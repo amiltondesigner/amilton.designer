@@ -1,13 +1,15 @@
 ---
 /**
- * Capítulo 03 — Pensamento. Como o designer pensa, em registro editorial
- * calmo: a tese, os princípios por trás e um fecho que faz a ponte pras
- * provas. Os atos scrubados (perguntas/hipóteses/camadas) foram removidos
- * (Amilton, 2026-07-04); o método agora se conta em prosa e princípios,
- * sem palco pinado. Reveals genéricos ficam por conta do experience.ts.
+ * Capítulo 03 — Pensamento. Como o designer pensa, em três tempos:
+ * a tese (abertura assimétrica), os princípios como linhas editoriais
+ * numeradas (não mais grid 2×2), e um FECHO que inunda a tela na cor
+ * profunda do capítulo (laranja) — o primeiro beat de imersão desde a
+ * Descoberta. "Descarto." vem riscado no vermelho reservado aos descartes.
+ *
+ * Os títulos-display sobem de máscaras (motion-assinatura, o mesmo do hero
+ * e do nome na Descoberta). Sem JS / mobile / reduced-motion: tudo nasce
+ * visível e estático; os reveals genéricos ficam por conta do experience.ts.
  */
-import MarkFragment from "../MarkFragment.astro";
-
 const blocos = [
   {
     id: "processo",
@@ -43,69 +45,100 @@ const blocos = [
 <section
   id="pensamento"
   data-chapter-section="pensamento"
-  class="scroll-mt-24 py-28 md:py-44 relative isolate"
+  class="scroll-mt-24 relative isolate"
 >
-  <!-- eco da marca: um pedaço do A+S, em laranja -->
-  <MarkFragment
-    class="hidden md:block top-40 -left-48 w-[600px] lg:w-[720px]"
-    intensidade={10}
-    rotacao={12}
-  />
-
-  <div class="wrap">
-    <p class="kicker text-accent" data-anima="fade">
-      Como eu penso
-    </p>
-    <h2 class="display-2 mt-6 max-w-[16ch]" data-anima>
-      Boa interface começa como pergunta.
-    </h2>
-    <p
-      class="mt-6 max-w-xl text-lg leading-relaxed text-muted"
-      data-anima
-      data-anima-delay="0.1"
-    >
-      Ela nasce de dúvidas, hipóteses, rabiscos, testes e uma pilha de
-      descartes. O que você vê no final é só a parte que sobreviveu.
-    </p>
+  <!-- Tempo 1 — a tese, assimétrica: título grande à esquerda, o
+       contraponto encostado na base, à direita -->
+  <div class="wrap pt-28 md:pt-44">
+    <p class="kicker text-accent" data-anima="fade">Como eu penso</p>
+    <div class="mt-8 grid grid-cols-1 gap-8 md:mt-12 md:grid-cols-12 md:items-end md:gap-10">
+      <h2 class="display-1 max-w-[13ch] md:col-span-8">
+        <span class="p-mask"
+          ><span class="p-mask-inner"
+            >Boa interface começa como <span class="text-accent">pergunta</span
+            >.</span
+          ></span
+        >
+      </h2>
+      <p
+        class="text-lg leading-relaxed text-muted md:col-span-4 md:pb-3"
+        data-anima
+        data-anima-delay="0.1"
+      >
+        Ela nasce de dúvidas, hipóteses, rabiscos, testes e uma pilha de
+        descartes. O que você vê no final é só a parte que sobreviveu.
+      </p>
+    </div>
   </div>
 
-  <!-- Os princípios por trás (âncoras do mapa conceitual) -->
-  <div class="wrap mt-24 md:mt-36">
-    <p class="kicker text-accent" data-anima="fade">Os princípios por trás</p>
-    <div class="mt-10 grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2">
+  <!-- Tempo 2 — os princípios como linhas editoriais: número grande,
+       título, texto deslocado. Fios finos marcam o ritmo. -->
+  <div class="wrap mt-24 md:mt-40">
+    <div class="border-t border-border">
       {
         blocos.map((b) => (
-          <article id={b.id} class="scroll-mt-32 max-w-xl" data-anima>
-            <div class="flex items-baseline gap-4">
-              <span class="font-display text-sm font-medium tabular-nums text-faint">
-                {b.numero}
-              </span>
-              <h3 class="font-display text-2xl font-semibold tracking-tight md:text-3xl">
-                {b.titulo}
-              </h3>
-            </div>
-            <p class="mt-4 leading-relaxed text-muted">{b.texto}</p>
+          <article
+            id={b.id}
+            class="grid scroll-mt-32 grid-cols-12 items-baseline gap-x-6 gap-y-3 border-b border-border py-9 md:py-14"
+            data-anima
+          >
+            <span class="col-span-2 font-display text-2xl font-medium tabular-nums text-accent md:col-span-1 md:text-3xl">
+              {b.numero}
+            </span>
+            <h3 class="col-span-10 font-display text-3xl font-semibold leading-[1.02] tracking-tight md:col-span-4 md:text-[2.75rem]">
+              {b.titulo}
+            </h3>
+            <p class="col-span-12 max-w-prose leading-relaxed text-muted md:col-span-6 md:col-start-7 md:text-lg">
+              {b.texto}
+            </p>
           </article>
         ))
       }
     </div>
   </div>
 
-  <!-- Fecho: o método vira produto, e faz a ponte pras provas -->
-  <div class="wrap mt-24 md:mt-36">
-    <p class="kicker text-accent" data-anima="fade">
-      Testo. Descarto. Fico com pouco.
-    </p>
-    <p class="display-2 mt-6 max-w-[18ch]" data-anima>
-      O que sobreviveu virou produto.
-    </p>
-    <p
-      class="mt-6 max-w-xl text-muted"
-      data-anima="fade"
-      data-anima-delay="0.1"
-    >
-      O projeto final é consequência, nunca ponto de partida. As provas vêm a
-      seguir.
-    </p>
+  <!-- Tempo 3 — o fecho inunda a tela: laranja profundo, "Descarto."
+       riscado em vermelho, e a ponte pras provas -->
+  <div class="beat mt-24 md:mt-40" data-anima="fade">
+    <div class="wrap py-24 md:py-36">
+      <p class="beat-lead">
+        Testo. <span class="descarto">Descarto.</span> Fico com pouco.
+      </p>
+      <h2 class="display-1 mt-8 max-w-[15ch]">
+        <span class="p-mask"
+          ><span class="p-mask-inner">O que sobreviveu virou produto.</span
+          ></span
+        >
+      </h2>
+      <p class="beat-bridge mt-8 max-w-xl text-lg leading-relaxed">
+        O projeto final é consequência, nunca ponto de partida. As provas vêm a
+        seguir.
+      </p>
+    </div>
   </div>
 </section>
+
+<style>
+  /* o fecho: banda full-bleed na cor profunda do capítulo */
+  .beat {
+    background-color: var(--ch-deep);
+    color: var(--paper);
+  }
+  .beat-lead {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+    letter-spacing: -0.01em;
+    color: color-mix(in oklab, var(--paper) 82%, transparent);
+  }
+  .descarto {
+    color: var(--paper);
+    text-decoration: line-through;
+    text-decoration-color: var(--descarte);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.1em;
+  }
+  .beat-bridge {
+    color: color-mix(in oklab, var(--paper) 76%, transparent);
+  }
+</style>
