@@ -18,7 +18,7 @@
  */
 import HeroMark from "../HeroMark.astro";
 
-const TITULO = "Antes das telas, o pensamento.";
+const TITULO = "Antes do desenho, o pensamento.";
 const palavras = TITULO.split(" ");
 ---
 
@@ -52,7 +52,7 @@ const palavras = TITULO.split(" ");
       data-abertura-item
     >
       <span class="item-inner inline-block"
-        >Te mostro como eu penso um produto, antes de desenhar a primeira tela.</span
+        >Te mostro como eu penso um produto, do problema à solução.</span
       >
     </p>
   </div>
@@ -160,15 +160,43 @@ const palavras = TITULO.split(" ");
         { opacity: 0, y: 14, duration: 0.7, stagger: 0.12 },
         "-=0.55",
       );
-    // entrada some pelo CONTÊINER; a saída explode o SVG interno. Assim a
-    // entrada e o scrub de saída não disputam a mesma opacity (era isso que
-    // deixava a marca invisível ao voltar pro topo).
-    if (marca) {
-      entrada.from(
-        marca,
-        { opacity: 0, duration: 1.6, ease: "power1.out" },
-        0.4,
-      );
+    // A marca SURGE desenhando o contorno e só então preenche: "antes do
+    // desenho (fill), o pensamento (o traço)". O contêiner fica visível;
+    // quem anima é o path (fill/stroke), separado do svg que a saída explode.
+    if (marca) gsap.set(marca, { opacity: 1 });
+    if (marcaPath) {
+      const traco = "rgba(28,25,23,0.32)"; // grafite do contorno
+      const cheio = "rgba(28,25,23,0.14)"; // fill final (espelha o CSS .am-mark)
+      entrada
+        .set(
+          marcaPath,
+          {
+            fill: "rgba(28,25,23,0)",
+            stroke: traco,
+            strokeWidth: 4,
+            strokeDasharray: 1,
+            strokeDashoffset: 1,
+          },
+          0,
+        )
+        // 1) o contorno é traçado (o "pensamento")
+        .to(
+          marcaPath,
+          { strokeDashoffset: 0, duration: 2.1, ease: "power1.inOut" },
+          0.3,
+        )
+        // 2) o preenchimento entra enquanto o contorno termina (o "desenho")
+        .to(
+          marcaPath,
+          { fill: cheio, duration: 1.0, ease: "power1.out" },
+          2.0,
+        )
+        // 3) só depois do fill segurar a marca, o traço se dissolve (sem piscar)
+        .to(
+          marcaPath,
+          { stroke: "rgba(28,25,23,0)", duration: 0.7, ease: "power1.out" },
+          2.6,
+        );
     }
 
     // Saída pinada — a frase se desmonta, o símbolo explode e a luz apaga
@@ -207,7 +235,7 @@ const palavras = TITULO.split(" ");
           { scale: 1 },
           {
             scale: 9.5,
-            transformOrigin: "46% 52%",
+            transformOrigin: "50% 50%",
             ease: "power2.in",
             duration: 0.75,
             immediateRender: false,
