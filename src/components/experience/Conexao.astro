@@ -1,10 +1,10 @@
 ---
 /**
- * Capítulo 05 — Conexão. Contato como consequência. Violeta. O convite fica
- * no violeta claro (headline + builder de WhatsApp); o FECHO é uma banda
- * violeta-profunda full-bleed onde a marca A+S — que veio em pedaços pelos
- * capítulos — aparece INTEIRA pela primeira vez (o pagamento do conceito).
- * Ela se remonta ao entrar (scale/rotação → 0), só no desktop com motion.
+ * Capítulo 05 — Conexão. Contato como consequência. Fecha o site no mesmo
+ * navy da Descoberta: o contato inteiro roda no escuro (headline + builder de
+ * WhatsApp) e emenda numa banda full-bleed onde a marca A+S — que veio em
+ * pedaços pelos capítulos — aparece INTEIRA pela primeira vez (o pagamento do
+ * conceito). Ela se remonta ao entrar (scale/rotação → 0), só no desktop.
  */
 import WhatsAppBuilder from "../contact/WhatsAppBuilder.tsx";
 import Socials from "../Socials.astro";
@@ -43,7 +43,7 @@ const year = new Date().getFullYear();
     <WhatsAppBuilder client:visible />
   </div>
 
-  <!-- Fecho: a marca inteira, remontada, na banda violeta-profunda -->
+  <!-- Fecho: a marca inteira, remontada, na banda navy de fecho -->
   <div class="beat mt-28 md:mt-40">
     <div class="wrap py-24 md:py-32">
       <div class="grid grid-cols-1 items-center gap-12 md:grid-cols-12 md:gap-8">
@@ -75,13 +75,13 @@ const year = new Date().getFullYear();
 </section>
 
 <style>
-  /* o fecho: banda full-bleed no MESMO tom da Descoberta ("Quem pensa
-     assim"), fechando o site num bookend escuro (Amilton, 2026-07-06) */
+  /* o fecho: banda full-bleed na navy de fecho (--bookend); como o capítulo
+     inteiro agora é navy, ela emenda sem costura no fundo da seção */
   .beat {
-    background-color: #0f1522;
+    background-color: var(--bookend);
     color: var(--paper);
   }
-  /* links (redes + voltar ao topo) legíveis sobre o violeta profundo —
+  /* links (redes + voltar ao topo) legíveis sobre o navy de fecho —
      o padrão text-muted do Socials some no escuro */
   .beat :global(a) {
     color: color-mix(in oklab, var(--paper) 80%, transparent);

@@ -65,6 +65,8 @@
   --paper: #fafaf7;
   --descarte: #d92d20;
   --whatsapp: #25d366;
+  /* navy de fecho: rodapé (banda da Conexão), capa da Descoberta e mapa */
+  --bookend: #0f1522;
 }
 /* Capítulo escuro: a abertura explode e apaga a luz (ver Abertura.astro).
    Superfícies aqui clareiam só um degrau sobre o fundo — ver --surface-boost. */
@@ -74,6 +76,7 @@ body[data-chapter="descoberta"] {
   --ch-muted: #a7b4cb;
   --ch-accent: #8fb3ff;
   --ch-deep: #101b36;
+  --on-accent: #0f1522;
   --surface-boost: 9%;
 }
 body[data-chapter="pensamento"] {
@@ -90,12 +93,16 @@ body[data-chapter="evidencias"] {
   --ch-accent: #15803d;
   --ch-deep: #14532d;
 }
+/* Conexão fecha o site no MESMO navy da Descoberta e do rodapé (bookend):
+   o contato deixa de ser o capítulo violeta (Amilton, 2026-07-07). */
 body[data-chapter="conexao"] {
-  --ch-bg: #f3f0fa;
-  --ch-fg: #171221;
-  --ch-muted: #564d6b;
-  --ch-accent: #6d28d9;
-  --ch-deep: #4c1d95;
+  --ch-bg: #0f1522;
+  --ch-fg: #f2f5fb;
+  --ch-muted: #a7b4cb;
+  --ch-accent: #8fb3ff;
+  --ch-deep: #101b36;
+  --on-accent: #0f1522;
+  --surface-boost: 9%;
 }
 
 /* Derivadas — recomputadas POR ELEMENTO (acompanham overrides locais
@@ -329,10 +336,17 @@ body[data-chapter="conexao"] {
   }
   .btn-accent {
     background-color: var(--ch-accent);
-    color: #fff;
+    /* --on-accent inverte o texto nos capítulos escuros (acento claro) */
+    color: var(--on-accent, #fff);
   }
   .btn-accent:hover {
     background-color: var(--ch-deep);
+  }
+  /* capítulos escuros: o acento é claro, então o hover CLAREIA (não escurece)
+     pra manter o texto escuro (--on-accent) legível */
+  body[data-chapter="descoberta"] .btn-accent:hover,
+  body[data-chapter="conexao"] .btn-accent:hover {
+    background-color: color-mix(in oklab, var(--ch-accent) 78%, var(--paper));
   }
   .btn-ghost {
     border: 1px solid var(--borda);
@@ -593,7 +607,8 @@ body:has(dialog[open]) {
 }
 
 /* ============================================================
-   Mapa conceitual — fullscreen na cor profunda do capítulo atual
+   Mapa conceitual — fullscreen na navy de fecho do site (--bookend),
+   sempre a mesma cor, independente do capítulo em que foi aberto
    ============================================================ */
 .mapa-overlay {
   position: fixed;
@@ -605,7 +620,7 @@ body:has(dialog[open]) {
   margin: 0;
   padding: 0;
   border: none;
-  background: var(--ch-deep);
+  background: var(--bookend);
   color: var(--paper);
 }
 .mapa-overlay::backdrop {

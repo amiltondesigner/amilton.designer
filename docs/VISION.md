@@ -34,7 +34,7 @@ As animações não existem para impressionar, mas para contar a história. Elem
 Sem menu tradicional. Um pequeno ponto abre um mapa conceitual com áreas como Processo, Pesquisa, Interface, IA, Projetos, Manifesto e Contato.
 
 ### Paleta
-Minimalista, porém viva. Fundo neutro e uma cor predominante por capítulo (azul, verde, laranja, violeta, vermelho), reforçando a narrativa.
+Minimalista, porém viva. Fundo neutro e uma cor predominante por capítulo (azul, laranja, verde), reforçando a narrativa. A abertura fica em neutro quente e o contato fecha de volta no azul, um bookend.
 
 ### Ritmo
 Alternância entre silêncio, impacto, leitura, descoberta e contemplação, criando uma experiência próxima à direção de um filme.
@@ -102,7 +102,7 @@ Não queremos um site preto. Nem branco. Nem monocromático. Queremos cor, mas u
 - Capítulo 2: entra azul.
 - Capítulo 3: entra laranja.
 - Capítulo 4: verde.
-- Capítulo 5: violeta.
+- Capítulo 5: volta ao azul do capítulo 2 — o site fecha no mesmo escuro em que abre (bookend).
 
 Cada ambiente possui uma atmosfera. A cor representa o momento da jornada. Nunca apenas identidade visual.
 

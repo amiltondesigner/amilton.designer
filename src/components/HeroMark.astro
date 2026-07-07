@@ -1,18 +1,16 @@
 ---
 /**
  * Marca do hero: o símbolo A+S do Amilton (peso bold, fonte única em
- * config/mark). Traço em grafite translúcido, sangrando pela borda direita.
- * Na saída da Abertura ele explode em direção à câmera (ver Abertura.astro).
- * Nunca recrio o símbolo: o visível é sempre o vetor dele.
+ * config/mark). Símbolo em grafite translúcido, estático, sangrando pela
+ * borda direita. Na saída da Abertura ele explode em direção à câmera
+ * (ver Abertura.astro). Nunca recrio o símbolo: o visível é sempre o vetor dele.
  */
 import { AM_MARK, MARK_VIEWBOX } from "../config/mark";
 ---
 
 <div class="hero-mark" aria-hidden="true">
   <svg class="hero-mark__svg" viewBox={MARK_VIEWBOX} fill="none">
-    <!-- pathLength normaliza o comprimento em 1: o contorno "desenha" via
-         stroke-dashoffset 1→0 antes de preencher (ver Abertura.astro) -->
-    <path d={AM_MARK} class="am-mark" pathLength="1" />
+    <path d={AM_MARK} class="am-mark" />
   </svg>
 </div>
 
