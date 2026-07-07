@@ -19,7 +19,7 @@ const projects = defineCollection({
       span: z.enum(["wide", "narrow"]).default("narrow"),
       /** rótulo curto pro placeholder enquanto não há imagem real */
       glyph: z.string().optional(),
-      /** área de atuação associada — exibida como título secundário no detalhe */
+      /** disciplina do case — título da prova na lista e subtítulo no detalhe */
       area: z
         .enum([
           "UI/UX Design",
